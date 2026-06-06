@@ -15,44 +15,82 @@ public partial class App : Application
 
     private static DispatcherQueue? _dispatcherQueue;
 
+    internal static void Log(string msg)
+    {
+        try
+        {
+            var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "calendar_startup.log");
+            System.IO.File.AppendAllText(path, $"{DateTime.Now:O} {msg}{Environment.NewLine}");
+        }
+        catch { /* ignore */ }
+    }
+
     public App()
     {
-        InitializeComponent();
+        Log("ctor: before InitializeComponent");
+        try
+        {
+            InitializeComponent();
+        }
+        catch (Exception ex)
+        {
+            Log("ctor: InitializeComponent THREW: " + ex);
+            throw;
+        }
+        Log("ctor: after InitializeComponent");
         UnhandledException += (_, e) =>
         {
-            System.Diagnostics.Debug.WriteLine(e.Exception);
+            Log("UnhandledException: " + e.Exception);
         };
     }
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
-        _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        try
+        {
+            Log("OnLaunched: start");
+            _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
-        AppHost.Initialize();
-        NotificationService.Initialize();
+            AppHost.Initialize();
+            Log("OnLaunched: AppHost.Initialize ok");
+            NotificationService.Initialize();
+            Log("OnLaunched: NotificationService ok");
 
-        CurrentSettings = await AppHost.Settings.GetAsync();
+            CurrentSettings = await AppHost.Settings.GetAsync();
+            Log("OnLaunched: settings loaded");
 
-        MainWidget = new MainWindow();
-        QuickAdd = new QuickAddWindow();
+            MainWidget = new MainWindow();
+            Log("OnLaunched: MainWindow created");
+            QuickAdd = new QuickAddWindow();
+            Log("OnLaunched: QuickAddWindow created");
 
-        ApplyTheme(CurrentSettings.Theme);
+            ApplyTheme(CurrentSettings.Theme);
 
-        SetupHotkeys();
-        SetupReminderScheduler();
+            SetupHotkeys();
+            SetupReminderScheduler();
+            Log("OnLaunched: hotkeys+scheduler ok");
 
-        MainWidget.Activate();
+            MainWidget.Activate();
+            Log("OnLaunched: MainWidget activated");
 
-        _tray = new TrayService();
-        _tray.Show();
+            _tray = new TrayService();
+            _tray.Show();
+            Log("OnLaunched: tray ok");
 
-        if (CurrentSettings.Autostart == false && AutostartService.IsEnabled())
-            CurrentSettings.Autostart = true;
+            if (CurrentSettings.Autostart == false && AutostartService.IsEnabled())
+                CurrentSettings.Autostart = true;
 
-        if (CurrentSettings.Autostart)
-            EnableAutostartIfNeeded();
+            if (CurrentSettings.Autostart)
+                EnableAutostartIfNeeded();
 
-        NavigateToLastSection();
+            NavigateToLastSection();
+            Log("OnLaunched: done");
+        }
+        catch (Exception ex)
+        {
+            Log("OnLaunched THREW: " + ex);
+            throw;
+        }
     }
 
     private static void EnableAutostartIfNeeded()

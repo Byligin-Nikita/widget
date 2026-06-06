@@ -41,8 +41,8 @@
                     <NavigationView.MenuItems>
                         <NavigationViewItem Tag="ClockDate" Content="Время" Icon="Clock"/>
                         <NavigationViewItem Tag="Calendar" Content="Календарь" Icon="Calendar"/>
-                        <NavigationViewItem Tag="Tasks" Content="Задачи" Icon="CheckList"/>
-                        <NavigationViewItem Tag="Reminders" Content="Напоминания" Icon="Reminder"/>
+                        <NavigationViewItem Tag="Tasks" Content="Задачи" Icon="List"/>
+                        <NavigationViewItem Tag="Reminders" Content="Напоминания" Icon="Important"/>
                     </NavigationView.MenuItems>
 
                     <NavigationView.FooterMenuItems>
