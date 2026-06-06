@@ -1,6 +1,5 @@
 using Calendar.Helpers;
 using Calendar.Pages;
-using H.NotifyIcon;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -36,14 +35,15 @@ public sealed partial class MainWindow : Window
 
     public void ToggleVisibility()
     {
-        if (Visible)
+        var aw = WidgetWindowHelper.GetAppWindow(this);
+        if (aw.IsVisible)
         {
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
-            this.Hide();
+            aw.Hide();
         }
         else
         {
-            this.Show();
+            aw.Show();
             Activate();
         }
     }
@@ -95,7 +95,8 @@ public sealed partial class MainWindow : Window
             NavigateTo(tag);
     }
 
-    private void MinimizeBtn_Click(object sender, RoutedEventArgs e) => this.Hide();
+    private void MinimizeBtn_Click(object sender, RoutedEventArgs e)
+        => WidgetWindowHelper.GetAppWindow(this).Hide();
 
     public void RefreshCurrentPage()
     {

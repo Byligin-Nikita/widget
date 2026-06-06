@@ -49,7 +49,7 @@ public sealed class TrayService : IDisposable
     private static void ShowMain()
     {
         if (App.MainWidget is null) return;
-        App.MainWidget.Show();
+        Calendar.Helpers.WidgetWindowHelper.GetAppWindow(App.MainWidget).Show();
         App.MainWidget.Activate();
     }
 

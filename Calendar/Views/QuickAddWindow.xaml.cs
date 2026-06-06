@@ -1,7 +1,6 @@
 using Calendar.Core.Models;
 using Calendar.Helpers;
 using Calendar.Services;
-using H.NotifyIcon;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -39,25 +38,28 @@ public sealed partial class QuickAddWindow : Window
         TitleBox.Focus(FocusState.Programmatic);
     }
 
+    private void HideWindow() => WidgetWindowHelper.GetAppWindow(this).Hide();
+
     public void Toggle()
     {
-        if (Visible)
+        var aw = WidgetWindowHelper.GetAppWindow(this);
+        if (aw.IsVisible)
         {
-            this.Hide();
+            aw.Hide();
             return;
         }
 
         TitleBox.Text = string.Empty;
         ModeTask.IsChecked = true;
         UpdateMode();
-        this.Show();
+        aw.Show();
         Activate();
         TitleBox.Focus(FocusState.Programmatic);
     }
 
     private async void Save_Click(object sender, RoutedEventArgs e) => await SaveAsync();
 
-    private void Cancel_Click(object sender, RoutedEventArgs e) => this.Hide();
+    private void Cancel_Click(object sender, RoutedEventArgs e) => HideWindow();
 
     private async void TitleBox_KeyDown(object sender, KeyRoutedEventArgs e)
     {
@@ -69,7 +71,7 @@ public sealed partial class QuickAddWindow : Window
         else if (e.Key == Windows.System.VirtualKey.Escape)
         {
             e.Handled = true;
-            this.Hide();
+            HideWindow();
         }
     }
 
@@ -102,7 +104,7 @@ public sealed partial class QuickAddWindow : Window
             });
         }
 
-        this.Hide();
+        HideWindow();
         App.MainWidget?.RefreshCurrentPage();
     }
 }
