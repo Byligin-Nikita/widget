@@ -19,11 +19,11 @@ public sealed partial class CalendarPage : Page
     private static readonly string GlyphReminder = ((char)0xE121).ToString();   // clock
 
     private static readonly CultureInfo Ru = new("ru-RU");
-    private static readonly Color FuchsiaColor = Color.FromArgb(0xFF, 0xE0, 0x21, 0x8A);
+    private static readonly Color AccentColor = Color.FromArgb(0xFF, 0x97, 0xC2, 0xEC);
     private static readonly Brush Transparent = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-    private static readonly Brush Fuchsia = new SolidColorBrush(FuchsiaColor);
-    private static readonly Brush SelectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0xE0, 0x21, 0x8A));
-    private static readonly Brush TodayBg = new SolidColorBrush(Color.FromArgb(0x18, 0xE0, 0x21, 0x8A));
+    private static readonly Brush Accent = new SolidColorBrush(AccentColor);
+    private static readonly Brush SelectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0x97, 0xC2, 0xEC));
+    private static readonly Brush TodayBg = new SolidColorBrush(Color.FromArgb(0x18, 0x97, 0xC2, 0xEC));
 
     private DateTime _month = new(DateTime.Today.Year, DateTime.Today.Month, 1);
     private DateTime? _selected;
@@ -77,7 +77,7 @@ public sealed partial class CalendarPage : Page
         {
             Width = 5,
             Height = 5,
-            Fill = Fuchsia,
+            Fill = Accent,
             Margin = new Thickness(0, 2, 0, 0),
             HorizontalAlignment = HorizontalAlignment.Center,
             Visibility = hasItems ? Visibility.Visible : Visibility.Collapsed
@@ -108,7 +108,7 @@ public sealed partial class CalendarPage : Page
         {
             var isSel = _selected.HasValue && c.Date.Date == _selected.Value.Date;
             c.Border.Background = isSel ? SelectedBg : (c.IsToday ? TodayBg : Transparent);
-            c.Border.BorderBrush = c.IsToday ? Fuchsia : Transparent;
+            c.Border.BorderBrush = c.IsToday ? Accent : Transparent;
             c.Border.BorderThickness = c.IsToday ? new Thickness(1.5) : new Thickness(0);
         }
     }

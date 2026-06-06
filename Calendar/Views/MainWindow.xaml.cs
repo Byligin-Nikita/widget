@@ -21,7 +21,7 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindow()
     {
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+        WidgetWindowHelper.SetWindowIcon(this);
         var s = App.CurrentSettings;
         var w = Math.Max(s.MainWindowWidth, 480);
         var h = Math.Max(s.MainWindowHeight, 640);

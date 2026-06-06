@@ -17,6 +17,7 @@ public sealed class TrayService : IDisposable
             ToolTipText = "Планер"
         };
 
+        TrySetIcon();
         _trayIcon.DoubleClickCommand = new RelayCommand(ShowMain);
         _trayIcon.ContextFlyout = BuildMenu();
     }
@@ -44,6 +45,22 @@ public sealed class TrayService : IDisposable
         menu.Items.Add(exit);
 
         return menu;
+    }
+
+    private void TrySetIcon()
+    {
+        try
+        {
+            var png = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "icon.png");
+            if (!System.IO.File.Exists(png)) return;
+            using var src = new System.Drawing.Bitmap(png);
+            using var small = new System.Drawing.Bitmap(src, new System.Drawing.Size(32, 32));
+            _trayIcon.Icon = System.Drawing.Icon.FromHandle(small.GetHicon());
+        }
+        catch
+        {
+            // tray will fall back to default icon
+        }
     }
 
     private static void ShowMain()

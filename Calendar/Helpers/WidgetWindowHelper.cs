@@ -46,6 +46,20 @@ public static class WidgetWindowHelper
         TrySetMica(window);
     }
 
+    public static void SetWindowIcon(Window window)
+    {
+        try
+        {
+            var ico = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "app.ico");
+            if (System.IO.File.Exists(ico))
+                GetAppWindow(window).SetIcon(ico);
+        }
+        catch
+        {
+            // non-critical
+        }
+    }
+
     public static void SetAlwaysOnTop(Window window, bool onTop)
     {
         var appWindow = GetAppWindow(window);

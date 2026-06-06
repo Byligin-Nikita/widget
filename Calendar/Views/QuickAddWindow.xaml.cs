@@ -14,7 +14,6 @@ public sealed partial class QuickAddWindow : Window
     public QuickAddWindow()
     {
         InitializeComponent();
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         ModeTask.Checked += (_, _) => UpdateMode();
         ModeReminder.Checked += (_, _) => UpdateMode();
 
@@ -28,6 +27,7 @@ public sealed partial class QuickAddWindow : Window
         }
         appWindow.Resize(new SizeInt32(460, 360));
         appWindow.IsShownInSwitchers = false;
+        WidgetWindowHelper.SetWindowIcon(this);
     }
 
     private void UpdateMode()
