@@ -22,7 +22,7 @@
             <TextBlock Text="Горячие клавиши" FontWeight="SemiBold"/>
             <TextBlock Text="Win+Shift+Q — быстрое добавление" FontSize="12"
                        Foreground="{StaticResource SecondaryTextBrush}"/>
-            <TextBlock Text="Win+Shift+P — показать/скрыть виджет" FontSize="12"
+            <TextBlock Text="Win+Shift+Z — показать/скрыть виджет" FontSize="12"
                        Foreground="{StaticResource SecondaryTextBrush}"/>
 
             <TextBlock Text="Данные хранятся локально. Синхронизация с облаком — в следующих версиях."

@@ -16,6 +16,8 @@ public enum ResizeEdge
 public static class WidgetWindowHelper
 {
     private const int ResizeGripSize = 8;
+    private const int MinWidth = 420;
+    private const int MinHeight = 560;
 
     public static AppWindow GetAppWindow(Window window)
     {
@@ -29,10 +31,11 @@ public static class WidgetWindowHelper
         var appWindow = GetAppWindow(window);
         if (appWindow.Presenter is OverlappedPresenter presenter)
         {
-            presenter.SetBorderAndTitleBar(false, false);
-            presenter.IsResizable = false;
-            presenter.IsMaximizable = false;
-            presenter.IsMinimizable = false;
+            // Native sizing border (drag edges/corners to resize) without an OS title bar.
+            presenter.SetBorderAndTitleBar(true, false);
+            presenter.IsResizable = true;
+            presenter.IsMaximizable = true;
+            presenter.IsMinimizable = true;
         }
 
         appWindow.IsShownInSwitchers = true;
@@ -101,36 +104,36 @@ public static class WidgetWindowHelper
         switch (edge)
         {
             case ResizeEdge.Right:
-                newW = Math.Max(280, startW + (int)deltaX);
+                newW = Math.Max(MinWidth, startW + (int)deltaX);
                 break;
             case ResizeEdge.Bottom:
-                newH = Math.Max(360, startH + (int)deltaY);
+                newH = Math.Max(MinHeight, startH + (int)deltaY);
                 break;
             case ResizeEdge.Left:
-                newW = Math.Max(280, startW - (int)deltaX);
+                newW = Math.Max(MinWidth, startW - (int)deltaX);
                 newX = startX + (int)deltaX;
                 break;
             case ResizeEdge.Top:
-                newH = Math.Max(360, startH - (int)deltaY);
+                newH = Math.Max(MinHeight, startH - (int)deltaY);
                 newY = startY + (int)deltaY;
                 break;
             case ResizeEdge.BottomRight:
-                newW = Math.Max(280, startW + (int)deltaX);
-                newH = Math.Max(360, startH + (int)deltaY);
+                newW = Math.Max(MinWidth, startW + (int)deltaX);
+                newH = Math.Max(MinHeight, startH + (int)deltaY);
                 break;
             case ResizeEdge.BottomLeft:
-                newW = Math.Max(280, startW - (int)deltaX);
-                newH = Math.Max(360, startH + (int)deltaY);
+                newW = Math.Max(MinWidth, startW - (int)deltaX);
+                newH = Math.Max(MinHeight, startH + (int)deltaY);
                 newX = startX + (int)deltaX;
                 break;
             case ResizeEdge.TopRight:
-                newW = Math.Max(280, startW + (int)deltaX);
-                newH = Math.Max(360, startH - (int)deltaY);
+                newW = Math.Max(MinWidth, startW + (int)deltaX);
+                newH = Math.Max(MinHeight, startH - (int)deltaY);
                 newY = startY + (int)deltaY;
                 break;
             case ResizeEdge.TopLeft:
-                newW = Math.Max(280, startW - (int)deltaX);
-                newH = Math.Max(360, startH - (int)deltaY);
+                newW = Math.Max(MinWidth, startW - (int)deltaX);
+                newH = Math.Max(MinHeight, startH - (int)deltaY);
                 newX = startX + (int)deltaX;
                 newY = startY + (int)deltaY;
                 break;

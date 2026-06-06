@@ -1,4 +1,5 @@
 using Calendar.Core.Repositories;
+using Calendar.Core.Storage;
 using Calendar.Core.Sync;
 using Calendar.Data;
 using Calendar.Platform.Services;
@@ -28,6 +29,9 @@ public static class AppHost
     public static ITaskRepository Tasks => Get<ITaskRepository>();
     public static IReminderRepository Reminders => Get<IReminderRepository>();
     public static ISettingsRepository Settings => Get<ISettingsRepository>();
+    public static INoteRepository Notes => Get<INoteRepository>();
+    public static IAttachmentRepository Attachments => Get<IAttachmentRepository>();
+    public static IAttachmentStorage AttachmentStorage => Get<IAttachmentStorage>();
     public static HotkeyService Hotkeys => Get<HotkeyService>();
     public static ReminderSchedulerService ReminderScheduler => Get<ReminderSchedulerService>();
 }

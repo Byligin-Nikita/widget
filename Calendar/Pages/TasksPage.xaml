@@ -17,14 +17,14 @@
 
         <ComboBox x:Name="FilterCombo" Grid.Row="1" HorizontalAlignment="Stretch"
                   SelectionChanged="FilterCombo_SelectionChanged">
+            <ComboBoxItem Content="Активные" Tag="Active" IsSelected="True"/>
             <ComboBoxItem Content="Сегодня" Tag="Today"/>
-            <ComboBoxItem Content="Все" Tag="All" IsSelected="True"/>
             <ComboBoxItem Content="Выполненные" Tag="Done"/>
         </ComboBox>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8">
-            <TextBox x:Name="NewTaskBox" PlaceholderText="Новая задача..." Width="200"/>
-            <Button Content="+" Click="AddTask_Click"/>
+            <TextBox x:Name="NewTaskBox" PlaceholderText="Новая задача..." Width="220" KeyDown="NewTaskBox_KeyDown"/>
+            <Button Content="+" Click="AddTask_Click" Style="{StaticResource AccentButtonStyle}"/>
         </StackPanel>
 
         <TextBlock x:Name="EmptyText" Grid.Row="3" Text="Нет задач — добавьте новую выше"
@@ -32,26 +32,28 @@
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    Visibility="Collapsed"/>
 
-        <ListView x:Name="TasksList" Grid.Row="3" SelectionMode="None">
+        <ListView x:Name="TasksList" Grid.Row="3" SelectionMode="None"
+                  IsItemClickEnabled="True" ItemClick="Task_Click">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:TaskRowViewModel">
-                    <StackPanel Padding="8" Spacing="4" Background="#08000000" CornerRadius="4" Margin="0,2">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <CheckBox IsChecked="{x:Bind IsCompleted, Mode=TwoWay}"
-                                      Checked="TaskCheck_Changed" Unchecked="TaskCheck_Changed"
-                                      Tag="{x:Bind Id}"/>
-                            <TextBlock Text="{x:Bind Title}" VerticalAlignment="Center"
-                                       TextDecorations="{x:Bind StrikeThrough}"/>
+                    <Grid ColumnSpacing="10" Padding="10,8" Margin="0,3"
+                          Background="{ThemeResource CardBackgroundBrush}" CornerRadius="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" IsChecked="{x:Bind IsCompleted}"
+                                  Click="Toggle_Click" Tag="{x:Bind Id}"
+                                  MinWidth="0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind Title}" TextDecorations="{x:Bind StrikeThrough}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <ProgressBar Value="{x:Bind CompletionPercent}" Maximum="100" Height="3"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="{x:Bind PercentText}" FontSize="12"
-                                       Foreground="{StaticResource SecondaryTextBrush}" Width="36"/>
-                            <Slider Minimum="0" Maximum="100" StepFrequency="25"
-                                    Value="{x:Bind CompletionPercent, Mode=TwoWay}"
-                                    ValueChanged="Progress_Changed" Tag="{x:Bind Id}"
-                                    HorizontalAlignment="Stretch"/>
-                        </StackPanel>
-                    </StackPanel>
+                        <TextBlock Grid.Column="2" Text="{x:Bind PercentText}" FontSize="12"
+                                   Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

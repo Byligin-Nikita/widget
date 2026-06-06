@@ -138,6 +138,7 @@ public partial class App : Application
     private static void SetupHotkeys()
     {
         var hotkeys = AppHost.Hotkeys;
+        HotkeyService.Logger = msg => Log("[hotkey] " + msg);
         hotkeys.HotkeyPressed += action =>
         {
             _dispatcherQueue?.TryEnqueue(() =>

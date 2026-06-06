@@ -17,12 +17,19 @@ public sealed class HotkeyService : IDisposable
 
     public event Action<HotkeyAction>? HotkeyPressed;
 
+    /// <summary>Optional diagnostic sink (set by the host app).</summary>
+    public static Action<string>? Logger { get; set; }
+
     public void Register(uint quickAddMod, uint quickAddVk, uint toggleMod, uint toggleVk)
     {
         Unregister();
         EnsureMessageWindow();
-        NativeMethods.RegisterHotKey(_hwnd, NativeMethods.HOTKEY_QUICK_ADD, quickAddMod, quickAddVk);
-        NativeMethods.RegisterHotKey(_hwnd, NativeMethods.HOTKEY_TOGGLE_WIDGET, toggleMod, toggleVk);
+
+        var ok1 = NativeMethods.RegisterHotKey(_hwnd, NativeMethods.HOTKEY_QUICK_ADD, quickAddMod, quickAddVk);
+        Logger?.Invoke($"register QuickAdd mod=0x{quickAddMod:X} vk=0x{quickAddVk:X} -> {ok1} (err {Marshal.GetLastWin32Error()})");
+
+        var ok2 = NativeMethods.RegisterHotKey(_hwnd, NativeMethods.HOTKEY_TOGGLE_WIDGET, toggleMod, toggleVk);
+        Logger?.Invoke($"register Toggle mod=0x{toggleMod:X} vk=0x{toggleVk:X} -> {ok2} (err {Marshal.GetLastWin32Error()})");
     }
 
     public void Unregister()
@@ -53,6 +60,7 @@ public sealed class HotkeyService : IDisposable
         if (msg == NativeMethods.WM_HOTKEY)
         {
             var id = wParam.ToInt32();
+            Logger?.Invoke($"WM_HOTKEY id={id}");
             HotkeyPressed?.Invoke(id switch
             {
                 NativeMethods.HOTKEY_QUICK_ADD => HotkeyAction.QuickAdd,

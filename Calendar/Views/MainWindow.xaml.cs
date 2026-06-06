@@ -13,10 +13,6 @@ public sealed partial class MainWindow : Window
     private bool _dragging;
     private Point _dragStart;
     private int _winStartX, _winStartY;
-    private bool _resizing;
-    private ResizeEdge _resizeEdge;
-    private int _resizeStartW, _resizeStartH, _resizeStartX, _resizeStartY;
-    private double _resizeStartPointerX, _resizeStartPointerY;
 
     public MainWindow()
     {
@@ -26,8 +22,11 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindow()
     {
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         var s = App.CurrentSettings;
-        WidgetWindowHelper.ConfigureWidgetWindow(this, s.AlwaysOnTop, s.MainWindowX, s.MainWindowY, s.MainWindowWidth, s.MainWindowHeight);
+        var w = Math.Max(s.MainWindowWidth, 480);
+        var h = Math.Max(s.MainWindowHeight, 640);
+        WidgetWindowHelper.ConfigureWidgetWindow(this, s.AlwaysOnTop, s.MainWindowX, s.MainWindowY, w, h);
         Closed += async (_, _) =>
         {
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
@@ -63,6 +62,7 @@ public sealed partial class MainWindow : Window
             "Calendar" => typeof(CalendarPage),
             "Tasks" => typeof(TasksPage),
             "Reminders" => typeof(RemindersPage),
+            "Notes" => typeof(NotesPage),
             "Settings" => typeof(SettingsPage),
             _ => typeof(ClockDatePage)
         };
@@ -130,43 +130,5 @@ public sealed partial class MainWindow : Window
     {
         _dragging = false;
         (sender as UIElement)?.ReleasePointerCapture(e.Pointer);
-    }
-
-    private void RootGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
-    {
-        var pos = e.GetCurrentPoint(RootGrid).Position;
-        var size = new Size(RootGrid.ActualWidth, RootGrid.ActualHeight);
-        _resizeEdge = WidgetWindowHelper.HitTestResize(pos, size);
-        if (_resizeEdge == ResizeEdge.None) return;
-
-        _resizing = true;
-        _resizeStartPointerX = pos.X;
-        _resizeStartPointerY = pos.Y;
-        var bounds = WidgetWindowHelper.GetBounds(this);
-        _resizeStartW = bounds.Width;
-        _resizeStartH = bounds.Height;
-        _resizeStartX = bounds.X;
-        _resizeStartY = bounds.Y;
-        RootGrid.CapturePointer(e.Pointer);
-    }
-
-    private void RootGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
-    {
-        if (!_resizing) return;
-        var pos = e.GetCurrentPoint(RootGrid).Position;
-        var dx = pos.X - _resizeStartPointerX;
-        var dy = pos.Y - _resizeStartPointerY;
-        var x = _resizeStartX;
-        var y = _resizeStartY;
-        var w = _resizeStartW;
-        var h = _resizeStartH;
-        WidgetWindowHelper.Resize(this, _resizeEdge, dx, dy, ref w, ref h, ref x, ref y);
-    }
-
-    private void RootGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
-    {
-        _resizing = false;
-        _resizeEdge = ResizeEdge.None;
-        RootGrid.ReleasePointerCapture(e.Pointer);
     }
 }

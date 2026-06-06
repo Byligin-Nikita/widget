@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Calendar.Pages.NotesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Calendar.Controls">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <TextBlock Text="Заметки" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                <Button Content="+ Новая" Click="New_Click" Style="{StaticResource AccentButtonStyle}"/>
+                <Button x:Name="DeleteBtn" Content="Удалить" Click="Delete_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <ListView x:Name="NotesList" Grid.Row="1" MaxHeight="110" SelectionMode="Single"
+                  DisplayMemberPath="Title" SelectionChanged="NotesList_SelectionChanged"
+                  BorderBrush="{StaticResource WidgetBorderBrush}" BorderThickness="1" CornerRadius="6"/>
+
+        <ScrollViewer Grid.Row="2">
+            <StackPanel Spacing="8">
+                <TextBlock x:Name="EmptyHint" Text="Создайте заметку кнопкой «+ Новая»"
+                           Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+                <TextBox x:Name="TitleBox" PlaceholderText="Заголовок"/>
+                <TextBox x:Name="ContentBox" PlaceholderText="Текст заметки…"
+                         AcceptsReturn="True" TextWrapping="Wrap" MinHeight="100"/>
+                <controls:AttachmentsControl x:Name="Attachments"/>
+                <Button Content="Сохранить" Click="Save_Click" HorizontalAlignment="Right" Style="{StaticResource AccentButtonStyle}"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

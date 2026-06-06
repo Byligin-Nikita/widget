@@ -19,7 +19,7 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <CalendarDatePicker x:Name="DatePicker" HorizontalAlignment="Stretch" Width="140"/>
                 <TimePicker x:Name="TimePicker" ClockIdentifier="24HourClock"/>
-                <Button Content="+" Click="AddReminder_Click"/>
+                <Button Content="+" Click="AddReminder_Click" Style="{StaticResource AccentButtonStyle}"/>
             </StackPanel>
         </StackPanel>
 

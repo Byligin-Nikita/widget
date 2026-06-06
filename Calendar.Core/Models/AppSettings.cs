@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Calendar.Core.Models;
 
 public enum AppTheme
@@ -9,17 +11,22 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
+    // Win32 hotkey modifier flags
+    private const uint ModShift = 0x0004;
+    private const uint ModWin = 0x0008;
+
     public int MainWindowX { get; set; } = 100;
     public int MainWindowY { get; set; } = 100;
-    public int MainWindowWidth { get; set; } = 380;
-    public int MainWindowHeight { get; set; } = 520;
+    public int MainWindowWidth { get; set; } = 560;
+    public int MainWindowHeight { get; set; } = 740;
     public string LastSection { get; set; } = "ClockDate";
     public bool AlwaysOnTop { get; set; }
     public bool Autostart { get; set; }
     public AppTheme Theme { get; set; } = AppTheme.System;
 
-    public uint QuickAddModifiers { get; set; } = 0x0008 | 0x0002; // Win + Shift
-    public uint QuickAddVirtualKey { get; set; } = 0x51; // Q
-    public uint ToggleWidgetModifiers { get; set; } = 0x0008 | 0x0002;
-    public uint ToggleWidgetVirtualKey { get; set; } = 0x50; // P
+    // Hotkeys are fixed for now (no config UI) -> not persisted, always taken from these defaults.
+    [JsonIgnore] public uint QuickAddModifiers { get; set; } = ModWin | ModShift;      // Win + Shift
+    [JsonIgnore] public uint QuickAddVirtualKey { get; set; } = 0x51;                  // Q
+    [JsonIgnore] public uint ToggleWidgetModifiers { get; set; } = ModWin | ModShift;  // Win + Shift
+    [JsonIgnore] public uint ToggleWidgetVirtualKey { get; set; } = 0x5A;              // Z (P is often taken)
 }

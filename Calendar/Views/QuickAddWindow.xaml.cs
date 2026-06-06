@@ -15,20 +15,20 @@ public sealed partial class QuickAddWindow : Window
     public QuickAddWindow()
     {
         InitializeComponent();
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         ModeTask.Checked += (_, _) => UpdateMode();
         ModeReminder.Checked += (_, _) => UpdateMode();
 
         var appWindow = WidgetWindowHelper.GetAppWindow(this);
         if (appWindow.Presenter is OverlappedPresenter p)
         {
-            p.SetBorderAndTitleBar(true, false);
-            p.IsResizable = false;
+            p.SetBorderAndTitleBar(true, true);
+            p.IsResizable = true;
+            p.IsMaximizable = false;
+            p.IsAlwaysOnTop = true;
         }
-        appWindow.Resize(new SizeInt32(320, 220));
+        appWindow.Resize(new SizeInt32(460, 360));
         appWindow.IsShownInSwitchers = false;
-
-        if (appWindow.Presenter is OverlappedPresenter overlapped)
-            overlapped.IsAlwaysOnTop = true;
     }
 
     private void UpdateMode()

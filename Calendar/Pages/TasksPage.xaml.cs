@@ -3,7 +3,7 @@ using Calendar.Services;
 using Calendar.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 
 namespace Calendar.Pages;
@@ -17,15 +17,30 @@ public sealed partial class TasksPage : Page
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        await ReloadAsync();
+        await LoadTasksAsync();
     }
 
     public async Task ReloadAsync() => await LoadTasksAsync();
 
     private async void FilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        => await LoadTasksAsync();
+    {
+        // Fires during InitializeComponent before TasksList exists; skip until ready.
+        if (TasksList is null) return;
+        await LoadTasksAsync();
+    }
 
-    private async void AddTask_Click(object sender, RoutedEventArgs e)
+    private async void NewTaskBox_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            e.Handled = true;
+            await AddTaskAsync();
+        }
+    }
+
+    private async void AddTask_Click(object sender, RoutedEventArgs e) => await AddTaskAsync();
+
+    private async Task AddTaskAsync()
     {
         var title = NewTaskBox.Text?.Trim();
         if (string.IsNullOrEmpty(title)) return;
@@ -34,67 +49,83 @@ public sealed partial class TasksPage : Page
         await LoadTasksAsync();
     }
 
-    private async void TaskCheck_Changed(object sender, RoutedEventArgs e)
+    private async void Toggle_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is CheckBox cb && TryGetTagGuid(cb.Tag, out var id))
+        if (sender is not CheckBox cb || cb.Tag is not Guid id) return;
+        var task = await AppHost.Tasks.GetByIdAsync(id);
+        if (task is null) return;
+        task.IsCompleted = cb.IsChecked == true;
+        if (task.IsCompleted) task.CompletionPercent = 100;
+        await AppHost.Tasks.SaveAsync(task);
+        await LoadTasksAsync();
+    }
+
+    private async void Task_Click(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is TaskRowViewModel row)
+            await EditTaskAsync(row.Id);
+    }
+
+    private async Task EditTaskAsync(Guid id)
+    {
+        var task = await AppHost.Tasks.GetByIdAsync(id);
+        if (task is null) return;
+
+        var box = new TextBox { Text = task.Title, Header = "Название" };
+        var slider = new Slider { Minimum = 0, Maximum = 100, StepFrequency = 5, Value = task.CompletionPercent, Header = "Прогресс, %" };
+        var done = new CheckBox { Content = "Выполнено", IsChecked = task.IsCompleted };
+        var panel = new StackPanel { Spacing = 10 };
+        panel.Children.Add(box);
+        panel.Children.Add(slider);
+        panel.Children.Add(done);
+
+        var dialog = new ContentDialog
         {
-            var task = await AppHost.Tasks.GetByIdAsync(id);
-            if (task is null) return;
-            task.IsCompleted = cb.IsChecked == true;
-            task.CompletionPercent = task.IsCompleted ? 100 : task.CompletionPercent;
+            Title = "Задача",
+            Content = panel,
+            PrimaryButtonText = "Сохранить",
+            SecondaryButtonText = "Удалить",
+            CloseButtonText = "Отмена",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
+        {
+            task.Title = string.IsNullOrWhiteSpace(box.Text) ? task.Title : box.Text.Trim();
+            task.CompletionPercent = (int)slider.Value;
+            task.IsCompleted = done.IsChecked == true || task.CompletionPercent >= 100;
+            if (task.IsCompleted) task.CompletionPercent = 100;
             await AppHost.Tasks.SaveAsync(task);
             await LoadTasksAsync();
         }
-    }
-
-    private async void Progress_Changed(object sender, RangeBaseValueChangedEventArgs e)
-    {
-        if (sender is Slider slider && TryGetTagGuid(slider.Tag, out var id))
+        else if (result == ContentDialogResult.Secondary)
         {
-            var task = await AppHost.Tasks.GetByIdAsync(id);
-            if (task is null) return;
-            task.CompletionPercent = (int)e.NewValue;
-            task.IsCompleted = task.CompletionPercent >= 100;
-            await AppHost.Tasks.SaveAsync(task);
-            var row = _rows.FirstOrDefault(r => r.Id == id);
-            if (row is not null)
-            {
-                row.CompletionPercent = task.CompletionPercent;
-                row.IsCompleted = task.IsCompleted;
-                row.UpdateDisplay();
-            }
+            await AppHost.Tasks.DeleteAsync(id);
+            await LoadTasksAsync();
         }
     }
 
     private async Task LoadTasksAsync()
     {
+        if (TasksList is null) return;
+
         var all = await AppHost.Tasks.GetAllAsync();
-        var filter = (FilterCombo.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "All";
+        var filter = (FilterCombo.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Active";
 
         var filtered = filter switch
         {
-            "Today" => all.Where(t => t.DueDate?.Date == DateTime.Today.Date),
+            "Today" => all.Where(t => t.DueDate?.Date == DateTime.Today.Date && !t.IsCompleted),
             "Done" => all.Where(t => t.IsCompleted),
             _ => all.Where(t => !t.IsCompleted)
         };
 
         _rows = filtered.Select(TaskRowViewModel.From).ToList();
         TasksList.ItemsSource = _rows;
+
         var empty = _rows.Count == 0;
         EmptyText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
         TasksList.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
-    }
-
-    private static bool TryGetTagGuid(object? tag, out Guid id)
-    {
-        if (tag is Guid g)
-        {
-            id = g;
-            return true;
-        }
-        if (tag is string s && Guid.TryParse(s, out id))
-            return true;
-        id = default;
-        return false;
     }
 }
