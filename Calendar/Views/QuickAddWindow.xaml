@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Calendar.Views.QuickAddWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Быстрое добавление">
+
+    <Grid Background="{StaticResource WidgetBackgroundBrush}" Padding="16" Width="320" Height="220">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Быстрое добавление" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <RadioButton x:Name="ModeTask" Content="Задача" IsChecked="True" GroupName="Mode"/>
+            <RadioButton x:Name="ModeReminder" Content="Напоминание" GroupName="Mode"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBox x:Name="TitleBox" PlaceholderText="Название..." KeyDown="TitleBox_KeyDown"/>
+            <ComboBox x:Name="DelayCombo" Header="Через (для напоминания)" Visibility="Collapsed"
+                      HorizontalAlignment="Stretch" SelectedIndex="1">
+                <ComboBoxItem Content="5 минут"/>
+                <ComboBoxItem Content="15 минут"/>
+                <ComboBoxItem Content="30 минут"/>
+                <ComboBoxItem Content="1 час"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+            <Button Content="Отмена" Click="Cancel_Click"/>
+            <Button Content="Сохранить" Click="Save_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
