@@ -2,7 +2,9 @@ using System;
 using Calendar.Controls;
 using Calendar.Helpers;
 using Calendar.Pages;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Windows.UI;
 
 namespace Calendar.Views;
 
@@ -19,17 +21,37 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindow()
     {
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+        // Acrylic so the adjustable background transparency shows through.
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop();
         var s = App.CurrentSettings;
         var w = Math.Max(s.MainWindowWidth, 480);
         var h = Math.Max(s.MainWindowHeight, 640);
         WidgetWindowHelper.ConfigureWidgetWindow(this, s.AlwaysOnTop, s.MainWindowX, s.MainWindowY, w, h);
         WidgetWindowHelper.SetWindowIcon(this);
+
+        // Drop the system title-bar strip; use our transparent drag region.
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(AppTitleBar);
+
         Closed += async (_, _) =>
         {
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
             await App.SaveSettingsAsync();
         };
+    }
+
+    /// <summary>Tint the min/maximize/close buttons with the accent colour.</summary>
+    public void ApplyCaptionColors(Color accent)
+    {
+        var tb = WidgetWindowHelper.GetAppWindow(this).TitleBar;
+        tb.ButtonBackgroundColor = Colors.Transparent;
+        tb.ButtonInactiveBackgroundColor = Colors.Transparent;
+        tb.ButtonForegroundColor = accent;
+        tb.ButtonInactiveForegroundColor = Color.FromArgb(0x88, accent.R, accent.G, accent.B);
+        tb.ButtonHoverForegroundColor = accent;
+        tb.ButtonHoverBackgroundColor = Color.FromArgb(0x22, accent.R, accent.G, accent.B);
+        tb.ButtonPressedForegroundColor = accent;
+        tb.ButtonPressedBackgroundColor = Color.FromArgb(0x33, accent.R, accent.G, accent.B);
     }
 
     public void ToggleVisibility()

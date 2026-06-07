@@ -24,6 +24,12 @@ public sealed class AppSettings
     public bool Autostart { get; set; }
     public AppTheme Theme { get; set; } = AppTheme.System;
 
+    /// <summary>User-chosen accent (hex #RRGGBB). Background is auto-derived from it.</summary>
+    public string AccentColor { get; set; } = "#2FA37C";
+
+    /// <summary>Background opacity 0..1 (1 = opaque, lower = more see-through).</summary>
+    public double BackgroundOpacity { get; set; } = 0.85;
+
     // Hotkeys are fixed for now (no config UI) -> not persisted, always taken from these defaults.
     [JsonIgnore] public uint QuickAddModifiers { get; set; } = ModWin | ModShift;      // Win + Shift
     [JsonIgnore] public uint QuickAddVirtualKey { get; set; } = 0x51;                  // Q

@@ -6,16 +6,23 @@
     xmlns:controls="using:Calendar.Controls"
     Title="Планер">
 
-    <Grid x:Name="RootGrid" Background="{ThemeResource AppBackgroundBrush}">
+    <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Transparent drag region in place of the system title bar -->
+        <Border x:Name="AppTitleBar" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent"/>
+
         <!-- Tinted nav rail -->
-        <Border Grid.Column="0" Width="84" Background="{ThemeResource NavRailBrush}"
+        <Border Grid.Row="1" Grid.Column="0" Width="84" Background="{StaticResource NavRailBrush}"
                 BorderBrush="{ThemeResource WidgetBorderBrush}" BorderThickness="0,0,1,0">
-            <Grid Padding="10,16">
+            <Grid Padding="10,8,10,16">
                 <StackPanel x:Name="NavTop" Spacing="6" VerticalAlignment="Top" HorizontalAlignment="Center">
                     <controls:NavRailButton x:Name="NavHome" Section="ClockDate" Glyph="&#xE80F;" Label="Главная"
                                             Accent="{StaticResource HomeAccentBrush}" Tint="{StaticResource HomeTintBrush}"
@@ -35,6 +42,6 @@
             </Grid>
         </Border>
 
-        <Frame x:Name="ContentFrame" Grid.Column="1"/>
+        <Frame x:Name="ContentFrame" Grid.Row="1" Grid.Column="1"/>
     </Grid>
 </Window>

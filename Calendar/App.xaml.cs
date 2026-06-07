@@ -131,6 +131,9 @@ public partial class App : Application
             mainRoot.RequestedTheme = elementTheme;
         if (QuickAdd?.Content is FrameworkElement quickRoot)
             quickRoot.RequestedTheme = elementTheme;
+
+        // Re-derive accent/background brushes for the (possibly new) theme.
+        ThemeManager.ApplyFromSettings();
     }
 
     private static void SetupHotkeys()

@@ -12,8 +12,6 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#DFEEE7"/>
-            <SolidColorBrush x:Key="NavRailBrush" Color="#E9F4EE"/>
             <SolidColorBrush x:Key="WidgetBackgroundBrush" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="WidgetBorderBrush" Color="#CFE2D7"/>
@@ -22,8 +20,6 @@
             <SolidColorBrush x:Key="MutedIconBrush" Color="#9AA09A"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#0D1813"/>
-            <SolidColorBrush x:Key="NavRailBrush" Color="#122019"/>
             <SolidColorBrush x:Key="WidgetBackgroundBrush" Color="#1C221E"/>
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="#1C221E"/>
             <SolidColorBrush x:Key="WidgetBorderBrush" Color="#2B332D"/>
@@ -42,6 +38,11 @@
     <SolidColorBrush x:Key="NotesTintBrush" Color="#2AE8975A"/>
     <SolidColorBrush x:Key="SettingsAccentBrush" Color="#A98EDA"/>
     <SolidColorBrush x:Key="SettingsTintBrush" Color="#2AA98EDA"/>
+
+    <!-- Dynamic surfaces: top-level so ThemeManager can recolor them live
+         (derived from accent + opacity at runtime). -->
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#DFEEE7"/>
+    <SolidColorBrush x:Key="NavRailBrush" Color="#E9F4EE"/>
 
     <!-- ===== Primary / brand accent = jade ===== -->
     <Color x:Key="AppAccentColor">#2FA37C</Color>
