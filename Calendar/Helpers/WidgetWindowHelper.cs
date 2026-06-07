@@ -39,11 +39,41 @@ public static class WidgetWindowHelper
         }
 
         appWindow.IsShownInSwitchers = true;
-        appWindow.MoveAndResize(new RectInt32(x, y, width, height));
+        appWindow.MoveAndResize(ClampToVisibleArea(x, y, width, height));
 
         SetAlwaysOnTop(window, alwaysOnTop);
 
         TrySetMica(window);
+    }
+
+    // Keep the window on a real, visible display. Saved coords can be off-screen
+    // (e.g. -32000,-32000 when last closed minimized, or a monitor that's gone).
+    private static RectInt32 ClampToVisibleArea(int x, int y, int width, int height)
+    {
+        width = Math.Max(width, MinWidth);
+        height = Math.Max(height, MinHeight);
+
+        DisplayArea area;
+        try
+        {
+            area = DisplayArea.GetFromRect(new RectInt32(x, y, width, height), DisplayAreaFallback.Nearest)
+                   ?? DisplayArea.Primary;
+        }
+        catch
+        {
+            area = DisplayArea.Primary;
+        }
+
+        var work = area.WorkArea;
+        width = Math.Min(width, work.Width);
+        height = Math.Min(height, work.Height);
+
+        var maxX = work.X + work.Width - width;
+        var maxY = work.Y + work.Height - height;
+        x = Math.Clamp(x, work.X, Math.Max(work.X, maxX));
+        y = Math.Clamp(y, work.Y, Math.Max(work.Y, maxY));
+
+        return new RectInt32(x, y, width, height);
     }
 
     public static void SetWindowIcon(Window window)
@@ -77,6 +107,8 @@ public static class WidgetWindowHelper
     public static void SaveBounds(Window window, Core.Models.AppSettings settings)
     {
         var (x, y, w, h) = GetBounds(window);
+        // Don't persist minimized/off-screen coords (Windows reports ~-32000 when minimized).
+        if (x <= -30000 || y <= -30000) return;
         settings.MainWindowX = x;
         settings.MainWindowY = y;
         settings.MainWindowWidth = w;
