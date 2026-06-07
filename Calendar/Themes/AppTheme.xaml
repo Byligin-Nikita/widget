@@ -12,24 +12,24 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F1EEE8"/>
-            <SolidColorBrush x:Key="NavRailBrush" Color="#FAF8F4"/>
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#EEF4F0"/>
+            <SolidColorBrush x:Key="NavRailBrush" Color="#F4F9F6"/>
             <SolidColorBrush x:Key="WidgetBackgroundBrush" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF"/>
-            <SolidColorBrush x:Key="WidgetBorderBrush" Color="#E6E1D8"/>
-            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#8C867C"/>
-            <SolidColorBrush x:Key="CompletedTextBrush" Color="#B4AEA3"/>
-            <SolidColorBrush x:Key="MutedIconBrush" Color="#A29C90"/>
+            <SolidColorBrush x:Key="WidgetBorderBrush" Color="#DEE7E2"/>
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#7F857F"/>
+            <SolidColorBrush x:Key="CompletedTextBrush" Color="#AEB3AC"/>
+            <SolidColorBrush x:Key="MutedIconBrush" Color="#9AA09A"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#17160F"/>
-            <SolidColorBrush x:Key="NavRailBrush" Color="#201E16"/>
-            <SolidColorBrush x:Key="WidgetBackgroundBrush" Color="#262420"/>
-            <SolidColorBrush x:Key="CardBackgroundBrush" Color="#262420"/>
-            <SolidColorBrush x:Key="WidgetBorderBrush" Color="#3A372F"/>
-            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#9A948A"/>
-            <SolidColorBrush x:Key="CompletedTextBrush" Color="#6E6A60"/>
-            <SolidColorBrush x:Key="MutedIconBrush" Color="#8C877C"/>
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#0F1411"/>
+            <SolidColorBrush x:Key="NavRailBrush" Color="#141A16"/>
+            <SolidColorBrush x:Key="WidgetBackgroundBrush" Color="#1C221E"/>
+            <SolidColorBrush x:Key="CardBackgroundBrush" Color="#1C221E"/>
+            <SolidColorBrush x:Key="WidgetBorderBrush" Color="#2B332D"/>
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#919A92"/>
+            <SolidColorBrush x:Key="CompletedTextBrush" Color="#666E66"/>
+            <SolidColorBrush x:Key="MutedIconBrush" Color="#828A82"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
