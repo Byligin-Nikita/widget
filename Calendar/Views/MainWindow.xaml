@@ -15,7 +15,7 @@
                         ItemInvoked="NavView_ItemInvoked">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Tag="ClockDate" Content="Время" Icon="Clock"/>
+                <NavigationViewItem Tag="ClockDate" Content="Главная" Icon="Home"/>
                 <NavigationViewItem Tag="Calendar" Content="Календарь" Icon="Calendar"/>
                 <NavigationViewItem Tag="Notes" Content="Заметки" Icon="Document"/>
             </NavigationView.MenuItems>
