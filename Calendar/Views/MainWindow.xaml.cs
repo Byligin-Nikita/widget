@@ -2,17 +2,11 @@ using Calendar.Helpers;
 using Calendar.Pages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Windows.Foundation;
 
 namespace Calendar.Views;
 
 public sealed partial class MainWindow : Window
 {
-    private bool _dragging;
-    private Point _dragStart;
-    private int _winStartX, _winStartY;
-
     public MainWindow()
     {
         InitializeComponent();
@@ -21,11 +15,12 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindow()
     {
-        WidgetWindowHelper.SetWindowIcon(this);
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         var s = App.CurrentSettings;
         var w = Math.Max(s.MainWindowWidth, 480);
         var h = Math.Max(s.MainWindowHeight, 640);
         WidgetWindowHelper.ConfigureWidgetWindow(this, s.AlwaysOnTop, s.MainWindowX, s.MainWindowY, w, h);
+        WidgetWindowHelper.SetWindowIcon(this);
         Closed += async (_, _) =>
         {
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
@@ -50,18 +45,21 @@ public sealed partial class MainWindow : Window
 
     public void NavigateToSection(string tag)
     {
+        tag = Normalize(tag);
         NavigateTo(tag);
         SelectNavItem(tag);
     }
 
+    private static string Normalize(string tag)
+        => tag is "Tasks" or "Reminders" ? "Calendar" : tag;
+
     private void NavigateTo(string tag)
     {
+        tag = Normalize(tag);
         var page = tag switch
         {
             "ClockDate" => typeof(ClockDatePage),
             "Calendar" => typeof(CalendarPage),
-            "Tasks" => typeof(TasksPage),
-            "Reminders" => typeof(RemindersPage),
             "Notes" => typeof(NotesPage),
             "Settings" => typeof(SettingsPage),
             _ => typeof(ClockDatePage)
@@ -95,41 +93,11 @@ public sealed partial class MainWindow : Window
             NavigateTo(tag);
     }
 
-    private void MinimizeBtn_Click(object sender, RoutedEventArgs e)
-        => WidgetWindowHelper.GetAppWindow(this).Hide();
-
     public void RefreshCurrentPage()
     {
-        if (ContentFrame.Content is TasksPage tp)
-            _ = tp.ReloadAsync();
-        else if (ContentFrame.Content is RemindersPage rp)
-            _ = rp.ReloadAsync();
-        else if (ContentFrame.Content is CalendarPage cp)
+        if (ContentFrame.Content is NotesPage np)
+            _ = np.ReloadAsync();
+        else if (ContentFrame.Content is CalendarPage)
             ContentFrame.Navigate(typeof(CalendarPage));
-    }
-
-    private void DragBar_PointerPressed(object sender, PointerRoutedEventArgs e)
-    {
-        _dragging = true;
-        _dragStart = e.GetCurrentPoint(null).Position;
-        var bounds = WidgetWindowHelper.GetBounds(this);
-        _winStartX = bounds.X;
-        _winStartY = bounds.Y;
-        (sender as UIElement)?.CapturePointer(e.Pointer);
-    }
-
-    private void DragBar_PointerMoved(object sender, PointerRoutedEventArgs e)
-    {
-        if (!_dragging) return;
-        var pt = e.GetCurrentPoint(null).Position;
-        var dx = (int)(pt.X - _dragStart.X);
-        var dy = (int)(pt.Y - _dragStart.Y);
-        WidgetWindowHelper.GetAppWindow(this).Move(new Windows.Graphics.PointInt32(_winStartX + dx, _winStartY + dy));
-    }
-
-    private void DragBar_PointerReleased(object sender, PointerRoutedEventArgs e)
-    {
-        _dragging = false;
-        (sender as UIElement)?.ReleasePointerCapture(e.Pointer);
     }
 }

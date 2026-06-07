@@ -3,7 +3,8 @@
     x:Class="Calendar.Pages.NotesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Calendar.Controls">
+    xmlns:controls="using:Calendar.Controls"
+    xmlns:core="using:Calendar.Core.Models">
 
     <Grid Padding="12" RowSpacing="8">
         <Grid.RowDefinitions>
@@ -21,8 +22,14 @@
         </Grid>
 
         <ListView x:Name="NotesList" Grid.Row="1" MaxHeight="110" SelectionMode="Single"
-                  DisplayMemberPath="Title" SelectionChanged="NotesList_SelectionChanged"
-                  BorderBrush="{StaticResource WidgetBorderBrush}" BorderThickness="1" CornerRadius="6"/>
+                  SelectionChanged="NotesList_SelectionChanged"
+                  BorderBrush="{StaticResource WidgetBorderBrush}" BorderThickness="1" CornerRadius="6">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="core:Note">
+                    <TextBlock Text="{x:Bind Title}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <ScrollViewer Grid.Row="2">
             <StackPanel Spacing="8">

@@ -72,16 +72,65 @@ public sealed partial class AttachmentsControl : UserControl
     {
         var full = AppHost.AttachmentStorage.GetFullPath(a.RelativePath);
         BitmapImage? thumb = null;
-        if (a.IsImage && File.Exists(full))
-            thumb = await MakeThumbAsync(full);
+        StorageFile? file = null;
+        if (File.Exists(full))
+        {
+            try { file = await StorageFile.GetFileFromPathAsync(full); } catch { }
+            if (a.IsImage) thumb = await MakeThumbAsync(full);
+        }
         return new AttachmentItem
         {
             Id = a.Id,
             FileName = a.FileName,
             FullPath = full,
             IsImage = a.IsImage,
-            Thumbnail = thumb
+            Thumbnail = thumb,
+            StoredFile = file
         };
+    }
+
+    // Drag attachments OUT to Explorer / other apps.
+    private void Items_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+    {
+        var files = new List<IStorageItem>();
+        foreach (var obj in e.Items)
+            if (obj is AttachmentItem { StoredFile: { } f }) files.Add(f);
+
+        if (files.Count == 0) { e.Cancel = true; return; }
+        e.Data.SetStorageItems(files);
+        e.Data.RequestedOperation = DataPackageOperation.Copy;
+    }
+
+    private AttachmentItem? Find(object sender)
+        => (sender as FrameworkElement)?.Tag is Guid id ? Items.FirstOrDefault(i => i.Id == id) : null;
+
+    private async void Open_Click(object sender, RoutedEventArgs e)
+    {
+        var it = Find(sender);
+        if (it is not null && File.Exists(it.FullPath))
+            await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(it.FullPath));
+    }
+
+    private async void SaveAs_Click(object sender, RoutedEventArgs e)
+    {
+        var it = Find(sender);
+        if (it?.StoredFile is null || App.MainWidget is null) return;
+
+        var ext = Path.GetExtension(it.FileName);
+        if (string.IsNullOrEmpty(ext)) ext = ".dat";
+
+        var picker = new FileSavePicker { SuggestedFileName = Path.GetFileNameWithoutExtension(it.FileName) };
+        picker.FileTypeChoices.Add(ext.TrimStart('.').ToUpperInvariant(), new List<string> { ext });
+        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWidget));
+
+        var target = await picker.PickSaveFileAsync();
+        if (target is not null)
+            await it.StoredFile.CopyAndReplaceAsync(target);
+    }
+
+    private async void RemoveMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is Guid id) await RemoveByIdAsync(id);
     }
 
     private async Task AddStorageFileAsync(StorageFile file)
@@ -204,7 +253,11 @@ public sealed partial class AttachmentsControl : UserControl
 
     private async void Remove_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button b || b.Tag is not Guid id) return;
+        if (sender is Button b && b.Tag is Guid id) await RemoveByIdAsync(id);
+    }
+
+    private async Task RemoveByIdAsync(Guid id)
+    {
         var att = await AppHost.Attachments.GetByIdAsync(id);
         await AppHost.Attachments.DeleteAsync(id);
         if (att is not null) AppHost.AttachmentStorage.Delete(att.RelativePath);
@@ -221,6 +274,7 @@ public sealed class AttachmentItem
     public string FullPath { get; set; } = string.Empty;
     public bool IsImage { get; set; }
     public ImageSource? Thumbnail { get; set; }
+    public Windows.Storage.StorageFile? StoredFile { get; set; }
 
     public Visibility ImageVisibility => IsImage ? Visibility.Visible : Visibility.Collapsed;
     public Visibility FileVisibility => IsImage ? Visibility.Collapsed : Visibility.Visible;

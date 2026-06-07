@@ -24,11 +24,19 @@
                        Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap"
                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"/>
             <GridView x:Name="ItemsView" ItemsSource="{x:Bind Items}" SelectionMode="None"
-                      IsItemClickEnabled="True" ItemClick="Items_ItemClick">
+                      IsItemClickEnabled="True" ItemClick="Items_ItemClick"
+                      CanDragItems="True" DragItemsStarting="Items_DragItemsStarting">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="local:AttachmentItem">
                         <Grid Width="110" Height="110" Margin="4" CornerRadius="6" Background="#14808080"
                               ToolTipService.ToolTip="{x:Bind FileName}">
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Открыть" Click="Open_Click" Tag="{x:Bind Id}"/>
+                                    <MenuFlyoutItem Text="Сохранить как…" Click="SaveAs_Click" Tag="{x:Bind Id}"/>
+                                    <MenuFlyoutItem Text="Удалить" Click="RemoveMenu_Click" Tag="{x:Bind Id}"/>
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
                             <Image Source="{x:Bind Thumbnail}" Stretch="UniformToFill"
                                    Visibility="{x:Bind ImageVisibility}"/>
                             <StackPanel Visibility="{x:Bind FileVisibility}" Padding="6" Spacing="4"

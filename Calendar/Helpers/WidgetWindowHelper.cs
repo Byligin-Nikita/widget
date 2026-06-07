@@ -31,8 +31,8 @@ public static class WidgetWindowHelper
         var appWindow = GetAppWindow(window);
         if (appWindow.Presenter is OverlappedPresenter presenter)
         {
-            // Native sizing border (drag edges/corners to resize) without an OS title bar.
-            presenter.SetBorderAndTitleBar(true, false);
+            // Standard window chrome: title bar + resizable border (no clipping, native move/resize).
+            presenter.SetBorderAndTitleBar(true, true);
             presenter.IsResizable = true;
             presenter.IsMaximizable = true;
             presenter.IsMinimizable = true;
