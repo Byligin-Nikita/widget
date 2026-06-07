@@ -2,8 +2,10 @@ using System;
 using Calendar.Controls;
 using Calendar.Helpers;
 using Calendar.Pages;
+using Calendar.Services;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 
 namespace Calendar.Views;
@@ -11,6 +13,9 @@ namespace Calendar.Views;
 public sealed partial class MainWindow : Window
 {
     private readonly NavRailButton[] _navButtons;
+    private readonly BackdropManager _backdrop = new();
+    private bool _backdropActive;
+    private static readonly SolidColorBrush TransparentBrush = new(Colors.Transparent);
 
     public MainWindow()
     {
@@ -21,8 +26,8 @@ public sealed partial class MainWindow : Window
 
     private void ConfigureWindow()
     {
-        // Acrylic so the adjustable background transparency shows through.
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop();
+        // Managed acrylic so background transparency is adjustable and actually visible.
+        _backdropActive = _backdrop.Attach(this);
         var s = App.CurrentSettings;
         var w = Math.Max(s.MainWindowWidth, 480);
         var h = Math.Max(s.MainWindowHeight, 640);
@@ -38,6 +43,20 @@ public sealed partial class MainWindow : Window
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
             await App.SaveSettingsAsync();
         };
+    }
+
+    /// <summary>Apply background tint + transparency (via acrylic, with a solid fallback).</summary>
+    public void ApplyBackdrop(Color tint, double opacity, bool isDark)
+    {
+        if (_backdropActive)
+        {
+            _backdrop.Configure(tint, opacity, isDark);
+            RootGrid.Background = TransparentBrush;
+        }
+        else
+        {
+            RootGrid.Background = new SolidColorBrush(tint);
+        }
     }
 
     /// <summary>Tint the min/maximize/close buttons with the accent colour.</summary>

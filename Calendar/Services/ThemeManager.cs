@@ -30,7 +30,6 @@ public static class ThemeManager
         var accent = ParseHex(accentHex, Fallback);
         Accent = accent;
         opacity = Math.Clamp(opacity, 0.4, 1.0);
-        var alpha = (byte)Math.Round(opacity * 255);
 
         var res = Application.Current.Resources;
 
@@ -53,12 +52,14 @@ public static class ThemeManager
             lg.GradientStops[2].Color = Shade(accent, -0.25);
         }
 
-        // Background + rail: a few tones of the accent, with the opacity applied.
-        var darkBase = Color.FromArgb(0xFF, 0x0C, 0x10, 0x0E);
-        var bg = isDark ? Mix(darkBase, accent, 0.16) : Mix(Colors.White, accent, 0.16);
-        var rail = isDark ? Mix(darkBase, accent, 0.24) : Mix(Colors.White, accent, 0.09);
-        SetBrush(res, "AppBackgroundBrush", WithAlpha(bg, alpha));
-        SetBrush(res, "NavRailBrush", WithAlpha(rail, alpha));
+        // Background tint: a few tones of the accent. Transparency is handled by the
+        // acrylic backdrop (real see-through), not brush alpha.
+        var darkBase = Color.FromArgb(0xFF, 0x0E, 0x13, 0x10);
+        var tint = isDark ? Mix(darkBase, accent, 0.16) : Mix(Colors.White, accent, 0.16);
+        SetBrush(res, "AppBackgroundBrush", tint);
+        SetBrush(res, "NavRailBrush", isDark ? Mix(darkBase, accent, 0.24) : Mix(Colors.White, accent, 0.09));
+
+        App.MainWidget?.ApplyBackdrop(tint, opacity, isDark);
     }
 
     private static bool CurrentIsDark()

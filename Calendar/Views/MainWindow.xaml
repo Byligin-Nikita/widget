@@ -6,7 +6,7 @@
     xmlns:controls="using:Calendar.Controls"
     Title="Планер">
 
-    <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
+    <Grid x:Name="RootGrid" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="36"/>
             <RowDefinition Height="*"/>
@@ -20,7 +20,7 @@
         <Border x:Name="AppTitleBar" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent"/>
 
         <!-- Tinted nav rail -->
-        <Border Grid.Row="1" Grid.Column="0" Width="84" Background="{StaticResource NavRailBrush}"
+        <Border Grid.Row="1" Grid.Column="0" Width="84" Background="Transparent"
                 BorderBrush="{ThemeResource WidgetBorderBrush}" BorderThickness="0,0,1,0">
             <Grid Padding="10,8,10,16">
                 <StackPanel x:Name="NavTop" Spacing="6" VerticalAlignment="Top" HorizontalAlignment="Center">
