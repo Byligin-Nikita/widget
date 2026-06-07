@@ -74,11 +74,13 @@ public sealed partial class RemindersPage : Page
     private async Task LoadAsync()
     {
         var items = await AppHost.Reminders.GetPendingAsync();
+        var now = DateTime.Now;
         var rows = items.Select(r => new ReminderRow
         {
             Id = r.Id,
             Title = r.Title,
-            WhenText = r.EffectiveTriggerAt.ToString("g")
+            WhenText = r.EffectiveTriggerAt.ToString("g"),
+            IsOverdue = r.EffectiveTriggerAt < now
         }).ToList();
         RemindersList.ItemsSource = rows;
         var empty = rows.Count == 0;

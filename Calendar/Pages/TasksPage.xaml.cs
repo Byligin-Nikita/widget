@@ -1,3 +1,4 @@
+using Calendar.Controls;
 using Calendar.Core.Models;
 using Calendar.Services;
 using Calendar.ViewModels;
@@ -74,21 +75,26 @@ public sealed partial class TasksPage : Page
         var box = new TextBox { Text = task.Title, Header = "Название" };
         var slider = new Slider { Minimum = 0, Maximum = 100, StepFrequency = 5, Value = task.CompletionPercent, Header = "Прогресс, %" };
         var done = new CheckBox { Content = "Выполнено", IsChecked = task.IsCompleted };
-        var panel = new StackPanel { Spacing = 10 };
+        var attachments = new AttachmentsControl { MinHeight = 150, Margin = new Thickness(0, 6, 0, 0) };
+
+        var panel = new StackPanel { Spacing = 10, Width = 360 };
         panel.Children.Add(box);
         panel.Children.Add(slider);
         panel.Children.Add(done);
+        panel.Children.Add(attachments);
 
         var dialog = new ContentDialog
         {
             Title = "Задача",
-            Content = panel,
+            Content = new ScrollViewer { Content = panel, MaxHeight = 480, VerticalScrollBarVisibility = ScrollBarVisibility.Auto },
             PrimaryButtonText = "Сохранить",
             SecondaryButtonText = "Удалить",
             CloseButtonText = "Отмена",
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
+
+        await attachments.LoadAsync(task.Id, AttachmentOwnerType.Task);
 
         var result = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
@@ -98,13 +104,14 @@ public sealed partial class TasksPage : Page
             task.IsCompleted = done.IsChecked == true || task.CompletionPercent >= 100;
             if (task.IsCompleted) task.CompletionPercent = 100;
             await AppHost.Tasks.SaveAsync(task);
-            await LoadTasksAsync();
         }
         else if (result == ContentDialogResult.Secondary)
         {
             await AppHost.Tasks.DeleteAsync(id);
-            await LoadTasksAsync();
         }
+
+        // Refresh in all cases (attachments may have changed even on Cancel).
+        await LoadTasksAsync();
     }
 
     private async Task LoadTasksAsync()
@@ -121,7 +128,14 @@ public sealed partial class TasksPage : Page
             _ => all.Where(t => !t.IsCompleted)
         };
 
-        _rows = filtered.Select(TaskRowViewModel.From).ToList();
+        var list = filtered.ToList();
+        var rows = new List<TaskRowViewModel>(list.Count);
+        foreach (var t in list)
+        {
+            var hasAtt = (await AppHost.Attachments.GetForOwnerAsync(t.Id)).Count > 0;
+            rows.Add(TaskRowViewModel.From(t, hasAtt));
+        }
+        _rows = rows;
         TasksList.ItemsSource = _rows;
 
         var empty = _rows.Count == 0;

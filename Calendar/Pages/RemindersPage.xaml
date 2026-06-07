@@ -38,8 +38,13 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind WhenText}" FontSize="12"
-                                       Foreground="{StaticResource SecondaryTextBrush}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{x:Bind WhenText}" FontSize="12"
+                                           Foreground="{StaticResource SecondaryTextBrush}"/>
+                                <TextBlock Text="• просрочено" FontSize="12"
+                                           Foreground="{StaticResource OverdueBrush}"
+                                           Visibility="{x:Bind OverdueVisibility}"/>
+                            </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
                             <Button Content="5м" Click="Snooze5_Click" Tag="{x:Bind Id}" FontSize="10" Padding="6,2"/>

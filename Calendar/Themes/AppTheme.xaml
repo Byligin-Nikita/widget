@@ -24,6 +24,7 @@
     <!-- ===== Soft-blue accent (same both themes) ===== -->
     <Color x:Key="AppAccentColor">#97C2EC</Color>
     <SolidColorBrush x:Key="AccentBrush" Color="#97C2EC"/>
+    <SolidColorBrush x:Key="OverdueBrush" Color="#D9534F"/>
 
     <!-- Recolor the WinUI system-accent family -> soft blue -->
     <Color x:Key="SystemAccentColor">#97C2EC</Color>

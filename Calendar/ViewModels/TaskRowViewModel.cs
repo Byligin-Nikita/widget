@@ -1,4 +1,5 @@
 using Calendar.Core.Models;
+using Microsoft.UI.Xaml;
 using Windows.UI.Text;
 
 namespace Calendar.ViewModels;
@@ -7,6 +8,11 @@ public sealed class TaskRowViewModel : BindableBase
 {
     public Guid Id { get; init; }
     public string Title { get; init; } = "";
+    public bool IsOverdue { get; init; }
+    public bool HasAttachments { get; init; }
+
+    public Visibility OverdueVisibility => IsOverdue ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility AttachmentVisibility => HasAttachments ? Visibility.Visible : Visibility.Collapsed;
 
     private bool _isCompleted;
     public bool IsCompleted
@@ -31,12 +37,14 @@ public sealed class TaskRowViewModel : BindableBase
         OnPropertyChanged(nameof(PercentText));
     }
 
-    public static TaskRowViewModel From(TaskItem t) => new()
+    public static TaskRowViewModel From(TaskItem t, bool hasAttachments = false) => new()
     {
         Id = t.Id,
         Title = t.Title,
         IsCompleted = t.IsCompleted,
-        CompletionPercent = t.CompletionPercent
+        CompletionPercent = t.CompletionPercent,
+        IsOverdue = !t.IsCompleted && t.DueDate is { } d && d.Date < DateTime.Today,
+        HasAttachments = hasAttachments
     };
 }
 

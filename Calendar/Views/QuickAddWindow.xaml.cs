@@ -1,4 +1,5 @@
 using Calendar.Core.Models;
+using Calendar.Core.Text;
 using Calendar.Helpers;
 using Calendar.Services;
 using Microsoft.UI.Windowing;
@@ -34,7 +35,9 @@ public sealed partial class QuickAddWindow : Window
     {
         var isReminder = ModeReminder.IsChecked == true;
         DelayCombo.Visibility = isReminder ? Visibility.Visible : Visibility.Collapsed;
-        TitleBox.PlaceholderText = isReminder ? "Текст (необязательно)..." : "Название...";
+        TitleBox.PlaceholderText = isReminder
+            ? "напр.: позвонить маме завтра в 18"
+            : "напр.: сдать отчёт завтра";
         TitleBox.Focus(FocusState.Programmatic);
     }
 
@@ -77,30 +80,40 @@ public sealed partial class QuickAddWindow : Window
 
     private async Task SaveAsync()
     {
+        var raw = TitleBox.Text ?? string.Empty;
+        var parsed = NaturalDateParser.Parse(raw, DateTime.Now);
+
         if (ModeTask.IsChecked == true)
         {
-            var title = TitleBox.Text?.Trim();
+            var title = !string.IsNullOrWhiteSpace(parsed.CleanTitle) ? parsed.CleanTitle : raw.Trim();
             if (string.IsNullOrEmpty(title)) return;
 
             await AppHost.Tasks.SaveAsync(new TaskItem
             {
                 Title = title,
-                DueDate = DateTime.Today
+                DueDate = parsed.When?.Date ?? DateTime.Today
             });
         }
         else
         {
-            var delays = new[] { 5, 15, 30, 60 };
-            var idx = DelayCombo.SelectedIndex < 0 ? 1 : DelayCombo.SelectedIndex;
-            var minutes = delays[Math.Min(idx, delays.Length - 1)];
-            var title = $"Напоминание ({minutes} мин)";
-            if (!string.IsNullOrWhiteSpace(TitleBox.Text))
-                title = TitleBox.Text.Trim();
+            DateTime trigger;
+            if (parsed.When is { } when)
+            {
+                trigger = when;
+            }
+            else
+            {
+                var delays = new[] { 5, 15, 30, 60 };
+                var idx = DelayCombo.SelectedIndex < 0 ? 1 : DelayCombo.SelectedIndex;
+                trigger = DateTime.Now.AddMinutes(delays[Math.Min(idx, delays.Length - 1)]);
+            }
+
+            var title = !string.IsNullOrWhiteSpace(parsed.CleanTitle) ? parsed.CleanTitle : "Напоминание";
 
             await AppHost.Reminders.SaveAsync(new ReminderItem
             {
                 Title = title,
-                TriggerAt = DateTime.Now.AddMinutes(minutes)
+                TriggerAt = trigger
             });
         }
 

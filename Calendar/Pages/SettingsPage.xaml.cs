@@ -4,7 +4,6 @@ using Calendar.Platform.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using Windows.ApplicationModel;
 
 namespace Calendar.Pages;
 
@@ -40,17 +39,11 @@ public sealed partial class SettingsPage : Page
         App.CurrentSettings.Autostart = AutostartSwitch.IsOn;
         try
         {
-            var path = Package.Current.InstalledLocation.Path;
-            var exe = Path.Combine(path, "Calendar.exe");
-            if (!File.Exists(exe))
-                exe = Environment.ProcessPath ?? exe;
-            AutostartService.SetEnabled(AutostartSwitch.IsOn, exe);
+            AutostartService.SetEnabled(AutostartSwitch.IsOn);
         }
         catch
         {
-            var exe = Environment.ProcessPath;
-            if (!string.IsNullOrEmpty(exe))
-                AutostartService.SetEnabled(AutostartSwitch.IsOn, exe);
+            // ignore registry failures
         }
         await App.SaveSettingsAsync();
     }

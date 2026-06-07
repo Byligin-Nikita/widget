@@ -49,10 +49,16 @@
                         <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
                             <TextBlock Text="{x:Bind Title}" TextDecorations="{x:Bind StrikeThrough}"
                                        TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="просрочено" FontSize="11" Foreground="{StaticResource OverdueBrush}"
+                                       Visibility="{x:Bind OverdueVisibility}"/>
                             <ProgressBar Value="{x:Bind CompletionPercent}" Maximum="100" Height="3"/>
                         </StackPanel>
-                        <TextBlock Grid.Column="2" Text="{x:Bind PercentText}" FontSize="12"
-                                   Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE723;" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"
+                                      Visibility="{x:Bind AttachmentVisibility}"/>
+                            <TextBlock Text="{x:Bind PercentText}" FontSize="12"
+                                       Foreground="{StaticResource SecondaryTextBrush}"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

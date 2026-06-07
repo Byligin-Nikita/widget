@@ -97,9 +97,7 @@ public partial class App : Application
     {
         try
         {
-            var exe = Environment.ProcessPath;
-            if (!string.IsNullOrEmpty(exe))
-                AutostartService.SetEnabled(true, exe);
+            AutostartService.SetEnabled(true);
         }
         catch
         {
