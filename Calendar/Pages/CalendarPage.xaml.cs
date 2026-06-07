@@ -19,11 +19,11 @@ public sealed partial class CalendarPage : Page
     private static readonly string GlyphReminder = ((char)0xE121).ToString();   // clock
 
     private static readonly CultureInfo Ru = new("ru-RU");
-    private static readonly Color AccentColor = Color.FromArgb(0xFF, 0x97, 0xC2, 0xEC);
+    private static readonly Color AccentColor = Color.FromArgb(0xFF, 0x34, 0xB6, 0x87);
     private static readonly Brush Transparent = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
     private static readonly Brush Accent = new SolidColorBrush(AccentColor);
-    private static readonly Brush SelectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0x97, 0xC2, 0xEC));
-    private static readonly Brush TodayBg = new SolidColorBrush(Color.FromArgb(0x18, 0x97, 0xC2, 0xEC));
+    private static readonly Brush SelectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0x34, 0xB6, 0x87));
+    private static readonly Brush TodayBg = new SolidColorBrush(Color.FromArgb(0x18, 0x34, 0xB6, 0x87));
 
     private DateTime _month = new(DateTime.Today.Year, DateTime.Today.Month, 1);
     private DateTime? _selected;

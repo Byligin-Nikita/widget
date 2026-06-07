@@ -1,15 +1,19 @@
+using System;
+using Calendar.Controls;
 using Calendar.Helpers;
 using Calendar.Pages;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Calendar.Views;
 
 public sealed partial class MainWindow : Window
 {
+    private readonly NavRailButton[] _navButtons;
+
     public MainWindow()
     {
         InitializeComponent();
+        _navButtons = new[] { NavHome, NavCalendar, NavNotes, NavSettings };
         ConfigureWindow();
     }
 
@@ -84,26 +88,15 @@ public sealed partial class MainWindow : Window
 
     private void SelectNavItem(string tag)
     {
-        foreach (var item in NavView.MenuItems.Concat(NavView.FooterMenuItems))
-        {
-            if (item is NavigationViewItem nvi && nvi.Tag?.ToString() == tag)
-            {
-                NavView.SelectedItem = nvi;
-                break;
-            }
-        }
+        tag = Normalize(tag);
+        foreach (var b in _navButtons)
+            b.IsSelected = b.Section == tag;
     }
 
-    private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    private void Nav_Selected(object sender, EventArgs e)
     {
-        if (args.SelectedItem is NavigationViewItem item && item.Tag is string tag)
-            NavigateTo(tag);
-    }
-
-    private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-    {
-        if (args.InvokedItemContainer is NavigationViewItem item && item.Tag is string tag)
-            NavigateTo(tag);
+        if (sender is NavRailButton b)
+            NavigateToSection(b.Section);
     }
 
     public void RefreshCurrentPage()

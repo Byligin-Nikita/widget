@@ -3,28 +3,38 @@
     x:Class="Calendar.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Calendar.Controls"
     Title="Планер">
 
-    <Grid x:Name="RootGrid" Background="Transparent">
-        <NavigationView x:Name="NavView" Background="Transparent"
-                        IsBackButtonVisible="Collapsed"
-                        IsSettingsVisible="False"
-                        PaneDisplayMode="LeftCompact"
-                        IsPaneToggleButtonVisible="False"
-                        SelectionChanged="NavView_SelectionChanged"
-                        ItemInvoked="NavView_ItemInvoked">
+    <Grid x:Name="RootGrid" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <NavigationView.MenuItems>
-                <NavigationViewItem Tag="ClockDate" Content="Главная" Icon="Home"/>
-                <NavigationViewItem Tag="Calendar" Content="Календарь" Icon="Calendar"/>
-                <NavigationViewItem Tag="Notes" Content="Заметки" Icon="Document"/>
-            </NavigationView.MenuItems>
+        <!-- Tinted nav rail -->
+        <Border Grid.Column="0" Width="84" Background="{ThemeResource NavRailBrush}"
+                BorderBrush="{ThemeResource WidgetBorderBrush}" BorderThickness="0,0,1,0">
+            <Grid Padding="10,16">
+                <StackPanel x:Name="NavTop" Spacing="6" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <controls:NavRailButton x:Name="NavHome" Section="ClockDate" Glyph="&#xE80F;" Label="Главная"
+                                            Accent="{StaticResource HomeAccentBrush}" Tint="{StaticResource HomeTintBrush}"
+                                            Selected="Nav_Selected"/>
+                    <controls:NavRailButton x:Name="NavCalendar" Section="Calendar" Glyph="&#xE787;" Label="Календарь"
+                                            Accent="{StaticResource CalAccentBrush}" Tint="{StaticResource CalTintBrush}"
+                                            Selected="Nav_Selected"/>
+                    <controls:NavRailButton x:Name="NavNotes" Section="Notes" Glyph="&#xE7C3;" Label="Заметки"
+                                            Accent="{StaticResource NotesAccentBrush}" Tint="{StaticResource NotesTintBrush}"
+                                            Selected="Nav_Selected"/>
+                </StackPanel>
+                <StackPanel x:Name="NavBottom" Spacing="6" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                    <controls:NavRailButton x:Name="NavSettings" Section="Settings" Glyph="&#xE713;" Label="Настройки"
+                                            Accent="{StaticResource SettingsAccentBrush}" Tint="{StaticResource SettingsTintBrush}"
+                                            Selected="Nav_Selected"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Tag="Settings" Content="Настройки" Icon="Setting"/>
-            </NavigationView.FooterMenuItems>
-
-            <Frame x:Name="ContentFrame"/>
-        </NavigationView>
+        <Frame x:Name="ContentFrame" Grid.Column="1"/>
     </Grid>
 </Window>
