@@ -1,8 +1,12 @@
 using System.Globalization;
+using Calendar.Core.Models;
+using Calendar.Core.Text;
 using Calendar.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.System;
 
 namespace Calendar.Pages;
 
@@ -35,7 +39,7 @@ public sealed partial class ClockDatePage : Page
     {
         var now = DateTime.Now;
         TimeText.Text = now.ToString("HH:mm:ss");
-        DateText.Text = $"{now.ToString("dddd, d MMMM yyyy", Ru)}";
+        DateText.Text = now.ToString("dddd, d MMMM yyyy", Ru);
     }
 
     private async Task LoadSummaryAsync()
@@ -44,19 +48,23 @@ public sealed partial class ClockDatePage : Page
         {
             var todayTasks = await AppHost.Tasks.GetByDueDateAsync(DateTime.Today);
             var pending = todayTasks.Count(t => !t.IsCompleted);
-            CalendarSub.Text = pending == 0 ? "На сегодня задач нет" : $"Сегодня: {pending} {Plural(pending, "задача", "задачи", "задач")}";
+            CalendarSub.Text = pending == 0
+                ? "На сегодня задач нет"
+                : $"Сегодня: {pending} {Plural(pending, "задача", "задачи", "задач")}";
 
             var notes = await AppHost.Notes.GetAllAsync();
-            NotesSub.Text = notes.Count == 0 ? "Пока пусто" : $"Всего: {notes.Count} {Plural(notes.Count, "заметка", "заметки", "заметок")}";
+            NotesSub.Text = notes.Count == 0
+                ? "Пока пусто"
+                : $"Всего: {notes.Count} {Plural(notes.Count, "заметка", "заметки", "заметок")}";
 
             var reminders = await AppHost.Reminders.GetPendingAsync();
             var now = DateTime.Now;
             var next = reminders.Where(r => !r.IsDone && r.EffectiveTriggerAt >= now)
                                 .OrderBy(r => r.EffectiveTriggerAt)
                                 .FirstOrDefault();
-            NextReminderText.Text = next is null
-                ? "Ближайших напоминаний нет"
-                : $"Ближайшее: {next.EffectiveTriggerAt.ToString("d MMM, HH:mm", Ru)} — {next.Title}";
+            RemindersSub.Text = next is null
+                ? "Нет ближайших"
+                : $"{next.EffectiveTriggerAt.ToString("d MMM, HH:mm", Ru)} — {next.Title}";
         }
         catch
         {
@@ -72,14 +80,57 @@ public sealed partial class ClockDatePage : Page
         return mod10 switch { 1 => one, >= 2 and <= 4 => few, _ => many };
     }
 
+    private async void QuickBox_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key != VirtualKey.Enter) return;
+        e.Handled = true;
+
+        var raw = (QuickBox.Text ?? string.Empty).Trim();
+        if (raw.Length == 0) return;
+
+        var parsed = NaturalDateParser.Parse(raw, DateTime.Now);
+        var title = string.IsNullOrWhiteSpace(parsed.CleanTitle) ? raw : parsed.CleanTitle;
+
+        string msg;
+        try
+        {
+            if (parsed.HasTime && parsed.When is { } when)
+            {
+                await AppHost.Reminders.SaveAsync(new ReminderItem { Title = title, TriggerAt = when });
+                msg = $"✓ Напоминание: {when.ToString("d MMM, HH:mm", Ru)} — {title}";
+            }
+            else
+            {
+                var due = parsed.When?.Date ?? DateTime.Today;
+                await AppHost.Tasks.SaveAsync(new TaskItem { Title = title, DueDate = due });
+                msg = $"✓ Задача на {due.ToString("d MMM", Ru)}: {title}";
+            }
+        }
+        catch
+        {
+            msg = "Не удалось сохранить";
+        }
+
+        QuickBox.Text = string.Empty;
+        QuickHint.Text = msg;
+        QuickHint.Visibility = Visibility.Visible;
+        await LoadSummaryAsync();
+    }
+
     private void Tile_Click(object sender, RoutedEventArgs e)
     {
         if ((sender as FrameworkElement)?.Tag is not string tag) return;
-        if (tag == "QuickAdd")
+        switch (tag)
         {
-            App.QuickAdd?.Toggle();
-            return;
+            case "QuickAdd":
+                App.QuickAdd?.Toggle();
+                break;
+            case "Minimize":
+                App.MainWidget?.ToggleVisibility();
+                break;
+            default:
+                App.MainWidget?.NavigateToSection(tag);
+                break;
         }
-        App.MainWidget?.NavigateToSection(tag);
     }
 }

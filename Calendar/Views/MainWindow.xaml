@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Планер">
 
-    <Grid x:Name="RootGrid" Background="{StaticResource WidgetBackgroundBrush}">
+    <Grid x:Name="RootGrid" Background="Transparent">
         <NavigationView x:Name="NavView" Background="Transparent"
                         IsBackButtonVisible="Collapsed"
                         IsSettingsVisible="False"
