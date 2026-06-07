@@ -50,6 +50,19 @@ public sealed partial class MainWindow : Window
         SelectNavItem(tag);
     }
 
+    // Win+Shift+Q: summon the widget on Notes and start a fresh note.
+    public void OpenNewNote()
+    {
+        var aw = WidgetWindowHelper.GetAppWindow(this);
+        if (!aw.IsVisible) aw.Show();
+        Activate();
+
+        SelectNavItem("Notes");
+        ContentFrame.Navigate(typeof(NotesPage), "new");
+        App.CurrentSettings.LastSection = "Notes";
+        _ = App.SaveSettingsAsync();
+    }
+
     private static string Normalize(string tag)
         => tag is "Tasks" or "Reminders" ? "Calendar" : tag;
 

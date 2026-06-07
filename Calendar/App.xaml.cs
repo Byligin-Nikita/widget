@@ -144,7 +144,7 @@ public partial class App : Application
                 switch (action)
                 {
                     case HotkeyAction.QuickAdd:
-                        QuickAdd?.Toggle();
+                        MainWidget?.OpenNewNote();
                         break;
                     case HotkeyAction.ToggleWidget:
                         MainWidget?.ToggleVisibility();

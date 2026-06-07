@@ -20,7 +20,7 @@
             </ComboBox>
 
             <TextBlock Text="Горячие клавиши" FontWeight="SemiBold"/>
-            <TextBlock Text="Win+Shift+Q — быстрое добавление" FontSize="12"
+            <TextBlock Text="Win+Shift+Q — новая заметка" FontSize="12"
                        Foreground="{StaticResource SecondaryTextBrush}"/>
             <TextBlock Text="Win+Shift+Z — показать/скрыть виджет" FontSize="12"
                        Foreground="{StaticResource SecondaryTextBrush}"/>

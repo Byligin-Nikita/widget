@@ -17,7 +17,10 @@ public sealed partial class NotesPage : Page
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        await ReloadAsync();
+        if (e.Parameter as string == "new")
+            await StartNewNoteAsync();
+        else
+            await ReloadAsync();
     }
 
     public async Task ReloadAsync()
@@ -55,7 +58,9 @@ public sealed partial class NotesPage : Page
             Attachments.Reset();
     }
 
-    private async void New_Click(object sender, RoutedEventArgs e)
+    private async void New_Click(object sender, RoutedEventArgs e) => await StartNewNoteAsync();
+
+    public async Task StartNewNoteAsync()
     {
         var note = new Note { Title = "Новая заметка", Content = string.Empty };
         await AppHost.Notes.SaveAsync(note);
