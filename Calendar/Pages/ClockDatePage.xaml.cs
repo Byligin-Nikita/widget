@@ -38,9 +38,14 @@ public sealed partial class ClockDatePage : Page
     private void UpdateClock()
     {
         var now = DateTime.Now;
+        WeekdayText.Text = Capitalize(now.ToString("dddd", Ru));
+        DayNumberText.Text = now.Day.ToString();
         TimeText.Text = now.ToString("HH:mm:ss");
-        DateText.Text = now.ToString("dddd, d MMMM yyyy", Ru);
+        DateText.Text = Capitalize(now.ToString("MMMM yyyy", Ru));
     }
+
+    private static string Capitalize(string s)
+        => string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0], Ru) + s[1..];
 
     private async Task LoadSummaryAsync()
     {

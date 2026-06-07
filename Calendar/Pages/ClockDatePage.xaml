@@ -5,18 +5,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Padding="24,22,24,28" Spacing="20" HorizontalAlignment="Stretch">
+        <StackPanel Padding="22,22,22,28" Spacing="18" HorizontalAlignment="Stretch">
 
-            <!-- Clock + date -->
-            <StackPanel HorizontalAlignment="Center" Spacing="0">
-                <TextBlock x:Name="TimeText" FontSize="40" FontWeight="Light" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="DateText" FontSize="14" HorizontalAlignment="Center"
-                           Foreground="{StaticResource SecondaryTextBrush}"/>
-            </StackPanel>
+            <!-- Hero: big date + jade orb -->
+            <Border Style="{StaticResource CardStyle}" Padding="0" Height="172" MaxWidth="620"
+                    HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="26,0,8,0" Spacing="0">
+                        <TextBlock x:Name="WeekdayText" FontSize="28" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SecondaryTextBrush}"/>
+                        <TextBlock x:Name="DayNumberText" FontSize="64" FontWeight="Bold" Margin="0,-8,0,4"/>
+                        <TextBlock x:Name="TimeText" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}"/>
+                        <TextBlock x:Name="DateText" FontSize="13" Foreground="{StaticResource SecondaryTextBrush}"/>
+                    </StackPanel>
+
+                    <Ellipse Grid.Column="1" Width="184" Height="184" Fill="{StaticResource OrbBrush}"
+                             VerticalAlignment="Center" Margin="0,0,-38,0"/>
+                </Grid>
+            </Border>
 
             <!-- Search-style quick-add pill -->
-            <StackPanel HorizontalAlignment="Center" MaxWidth="560" Spacing="4">
-                <Border CornerRadius="22" Height="44" Padding="16,0"
+            <StackPanel HorizontalAlignment="Stretch" MaxWidth="620" Spacing="4">
+                <Border CornerRadius="24" Height="46" Padding="18,0"
                         Background="{ThemeResource CardBackgroundBrush}"
                         BorderBrush="{ThemeResource WidgetBorderBrush}" BorderThickness="1">
                     <Grid ColumnSpacing="10">
@@ -39,36 +54,36 @@
             <VariableSizedWrapGrid x:Name="Tiles" Orientation="Horizontal"
                                    ItemWidth="152" ItemHeight="122" HorizontalAlignment="Center">
 
-                <Button Tag="Calendar" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2A34B687">
+                <Button Tag="Calendar" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2A5B8DEF">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                        <FontIcon Glyph="&#xE787;" FontSize="26" HorizontalAlignment="Center" Foreground="#34B687"/>
+                        <FontIcon Glyph="&#xE787;" FontSize="26" HorizontalAlignment="Center" Foreground="#5B8DEF"/>
                         <TextBlock Text="Календарь" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         <TextBlock x:Name="CalendarSub" FontSize="11" HorizontalAlignment="Center" TextAlignment="Center"
                                    TextWrapping="Wrap" Foreground="{StaticResource SecondaryTextBrush}"/>
                     </StackPanel>
                 </Button>
 
-                <Button Tag="Notes" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2AF0A24E">
+                <Button Tag="Notes" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2AE8975A">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                        <FontIcon Glyph="&#xE7C3;" FontSize="26" HorizontalAlignment="Center" Foreground="#F0A24E"/>
+                        <FontIcon Glyph="&#xE7C3;" FontSize="26" HorizontalAlignment="Center" Foreground="#E8975A"/>
                         <TextBlock Text="Заметки" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         <TextBlock x:Name="NotesSub" FontSize="11" HorizontalAlignment="Center" TextAlignment="Center"
                                    TextWrapping="Wrap" Foreground="{StaticResource SecondaryTextBrush}"/>
                     </StackPanel>
                 </Button>
 
-                <Button Tag="Calendar" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2AEC6F9B">
+                <Button Tag="Calendar" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2AE8769B">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                        <FontIcon Glyph="&#xE823;" FontSize="26" HorizontalAlignment="Center" Foreground="#EC6F9B"/>
+                        <FontIcon Glyph="&#xE823;" FontSize="26" HorizontalAlignment="Center" Foreground="#E8769B"/>
                         <TextBlock Text="Напоминания" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         <TextBlock x:Name="RemindersSub" FontSize="11" HorizontalAlignment="Center" TextAlignment="Center"
                                    TextWrapping="Wrap" Foreground="{StaticResource SecondaryTextBrush}"/>
                     </StackPanel>
                 </Button>
 
-                <Button Tag="QuickAdd" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2A5B8DEF">
+                <Button Tag="QuickAdd" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2A2FA37C">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                        <FontIcon Glyph="&#xE710;" FontSize="26" HorizontalAlignment="Center" Foreground="#5B8DEF"/>
+                        <FontIcon Glyph="&#xE710;" FontSize="26" HorizontalAlignment="Center" Foreground="#2FA37C"/>
                         <TextBlock Text="Быстро добавить" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/>
                         <TextBlock Text="Задача или напоминание" FontSize="11" HorizontalAlignment="Center" TextAlignment="Center"
                                    TextWrapping="Wrap" Foreground="{StaticResource SecondaryTextBrush}"/>
