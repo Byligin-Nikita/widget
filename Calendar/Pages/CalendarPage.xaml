@@ -40,8 +40,8 @@
                         <TextBlock Grid.Column="2" Text="Ср" TextAlignment="Center" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"/>
                         <TextBlock Grid.Column="3" Text="Чт" TextAlignment="Center" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"/>
                         <TextBlock Grid.Column="4" Text="Пт" TextAlignment="Center" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"/>
-                        <TextBlock Grid.Column="5" Text="Сб" TextAlignment="Center" FontSize="12" Foreground="{StaticResource CalAccentBrush}"/>
-                        <TextBlock Grid.Column="6" Text="Вс" TextAlignment="Center" FontSize="12" Foreground="{StaticResource CalAccentBrush}"/>
+                        <TextBlock Grid.Column="5" Text="Сб" TextAlignment="Center" FontSize="12" Foreground="{StaticResource AccentBrush}"/>
+                        <TextBlock Grid.Column="6" Text="Вс" TextAlignment="Center" FontSize="12" Foreground="{StaticResource AccentBrush}"/>
                     </Grid>
 
                     <!-- Day cells (filled in code) -->
@@ -94,7 +94,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="{x:Bind Glyph}" FontSize="14"
-                                                  Foreground="{StaticResource CalAccentBrush}" VerticalAlignment="Center"/>
+                                                  Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Text="{x:Bind Title}" TextTrimming="CharacterEllipsis"/>
                                             <TextBlock Text="{x:Bind Subtitle}" FontSize="11"

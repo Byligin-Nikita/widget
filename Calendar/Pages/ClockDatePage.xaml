@@ -81,9 +81,9 @@
                     </StackPanel>
                 </Button>
 
-                <Button Tag="QuickAdd" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="#2A2FA37C">
+                <Button Tag="QuickAdd" Click="Tile_Click" Style="{StaticResource TileButtonStyle}" Background="{StaticResource HomeTintBrush}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                        <FontIcon Glyph="&#xE710;" FontSize="26" HorizontalAlignment="Center" Foreground="#2FA37C"/>
+                        <FontIcon Glyph="&#xE710;" FontSize="26" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
                         <TextBlock Text="Быстро добавить" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/>
                         <TextBlock Text="Задача или напоминание" FontSize="11" HorizontalAlignment="Center" TextAlignment="Center"
                                    TextWrapping="Wrap" Foreground="{StaticResource SecondaryTextBrush}"/>

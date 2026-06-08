@@ -19,11 +19,20 @@ public sealed partial class CalendarPage : Page
     private static readonly string GlyphReminder = ((char)0xE121).ToString();   // clock
 
     private static readonly CultureInfo Ru = new("ru-RU");
-    private static readonly Color AccentColor = Color.FromArgb(0xFF, 0x34, 0xB6, 0x87);
     private static readonly Brush Transparent = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-    private static readonly Brush Accent = new SolidColorBrush(AccentColor);
-    private static readonly Brush SelectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0x34, 0xB6, 0x87));
-    private static readonly Brush TodayBg = new SolidColorBrush(Color.FromArgb(0x18, 0x34, 0xB6, 0x87));
+
+    // Recomputed from the user's accent (ThemeManager.Accent) on each build.
+    private Brush _accent = new SolidColorBrush(Color.FromArgb(0xFF, 0x2F, 0xA3, 0x7C));
+    private Brush _selectedBg = new SolidColorBrush(Color.FromArgb(0x3A, 0x2F, 0xA3, 0x7C));
+    private Brush _todayBg = new SolidColorBrush(Color.FromArgb(0x18, 0x2F, 0xA3, 0x7C));
+
+    private void UpdateAccentBrushes()
+    {
+        var a = ThemeManager.Accent;
+        _accent = new SolidColorBrush(a);
+        _selectedBg = new SolidColorBrush(Color.FromArgb(0x3A, a.R, a.G, a.B));
+        _todayBg = new SolidColorBrush(Color.FromArgb(0x18, a.R, a.G, a.B));
+    }
 
     private DateTime _month = new(DateTime.Today.Year, DateTime.Today.Month, 1);
     private DateTime? _selected;
@@ -42,6 +51,7 @@ public sealed partial class CalendarPage : Page
 
     private async Task BuildMonthAsync()
     {
+        UpdateAccentBrushes();
         MonthLabel.Text = Capitalize(_month.ToString("MMMM yyyy", Ru));
         DayGrid.Children.Clear();
         _cells.Clear();
@@ -77,7 +87,7 @@ public sealed partial class CalendarPage : Page
         {
             Width = 5,
             Height = 5,
-            Fill = Accent,
+            Fill = _accent,
             Margin = new Thickness(0, 2, 0, 0),
             HorizontalAlignment = HorizontalAlignment.Center,
             Visibility = hasItems ? Visibility.Visible : Visibility.Collapsed
@@ -107,8 +117,8 @@ public sealed partial class CalendarPage : Page
         foreach (var c in _cells)
         {
             var isSel = _selected.HasValue && c.Date.Date == _selected.Value.Date;
-            c.Border.Background = isSel ? SelectedBg : (c.IsToday ? TodayBg : Transparent);
-            c.Border.BorderBrush = c.IsToday ? Accent : Transparent;
+            c.Border.Background = isSel ? _selectedBg : (c.IsToday ? _todayBg : Transparent);
+            c.Border.BorderBrush = c.IsToday ? _accent : Transparent;
             c.Border.BorderThickness = c.IsToday ? new Thickness(1.5) : new Thickness(0);
         }
     }
