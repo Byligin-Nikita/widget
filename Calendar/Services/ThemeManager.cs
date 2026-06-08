@@ -55,9 +55,9 @@ public static class ThemeManager
         // Background tint: a few tones of the accent. Transparency is handled by the
         // acrylic backdrop (real see-through), not brush alpha.
         var darkBase = Color.FromArgb(0xFF, 0x0E, 0x13, 0x10);
-        var tint = isDark ? Mix(darkBase, accent, 0.16) : Mix(Colors.White, accent, 0.16);
+        var tint = isDark ? Mix(darkBase, accent, 0.22) : Mix(Colors.White, accent, 0.22);
         SetBrush(res, "AppBackgroundBrush", tint);
-        SetBrush(res, "NavRailBrush", isDark ? Mix(darkBase, accent, 0.24) : Mix(Colors.White, accent, 0.09));
+        SetBrush(res, "NavRailBrush", isDark ? Mix(darkBase, accent, 0.30) : Mix(Colors.White, accent, 0.14));
 
         App.MainWidget?.ApplyBackdrop(tint, opacity, isDark);
     }

@@ -14,7 +14,9 @@ namespace Calendar.Pages;
 
 public sealed partial class SettingsPage : Page
 {
-    private bool _loading;
+    // Starts true so control events fired during InitializeComponent (e.g. the
+    // Slider coercing to its Minimum) don't overwrite saved settings.
+    private bool _loading = true;
 
     public SettingsPage() => InitializeComponent();
 
