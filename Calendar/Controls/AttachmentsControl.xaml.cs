@@ -3,6 +3,7 @@ using Calendar.Core.Models;
 using Calendar.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
@@ -242,13 +243,11 @@ public sealed partial class AttachmentsControl : UserControl
         }
     }
 
-    private async void Items_ItemClick(object sender, ItemClickEventArgs e)
+    // Single/Ctrl/Shift click selects (for multi-drag); double-click opens.
+    private async void Item_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
-        if (e.ClickedItem is AttachmentItem it && File.Exists(it.FullPath))
-        {
-            var file = await StorageFile.GetFileFromPathAsync(it.FullPath);
-            await Launcher.LaunchFileAsync(file);
-        }
+        if ((sender as FrameworkElement)?.DataContext is AttachmentItem it && File.Exists(it.FullPath))
+            await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(it.FullPath));
     }
 
     private async void Remove_Click(object sender, RoutedEventArgs e)

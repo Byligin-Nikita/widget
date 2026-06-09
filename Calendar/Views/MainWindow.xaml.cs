@@ -38,6 +38,10 @@ public sealed partial class MainWindow : Window
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
 
+        // Re-assert topmost: enabling the custom title bar can reset the
+        // presenter's IsAlwaysOnTop, so apply it last.
+        WidgetWindowHelper.SetAlwaysOnTop(this, s.AlwaysOnTop);
+
         Closed += async (_, _) =>
         {
             WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);

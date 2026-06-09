@@ -52,6 +52,14 @@ public sealed partial class NotesPage : Page
 
     private async Task StartNewNoteAsync()
     {
+        // Reuse an existing empty note instead of piling up blanks.
+        var blank = _rows.FirstOrDefault(IsBlank);
+        if (blank is not null)
+        {
+            DispatcherQueue.TryEnqueue(() => blank.IsExpanded = true);
+            return;
+        }
+
         var note = new Note { Title = "Новая заметка", Content = string.Empty };
         await AppHost.Notes.SaveAsync(note);
         await ReloadAsync();
@@ -62,6 +70,11 @@ public sealed partial class NotesPage : Page
         // false->true transition fires Expanding (lazy-load + focus).
         DispatcherQueue.TryEnqueue(() => vm.IsExpanded = true);
     }
+
+    private static bool IsBlank(NoteRowViewModel r)
+        => string.IsNullOrWhiteSpace(r.Content)
+           && (string.IsNullOrWhiteSpace(r.Title) || r.Title == "Новая заметка")
+           && r.Badges.Count == 0;
 
     private void Expander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
     {
