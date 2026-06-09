@@ -9,8 +9,11 @@ namespace Calendar.Controls;
 
 public sealed partial class NavRailButton : UserControl
 {
-    private static readonly SolidColorBrush MutedBrush = new(Color.FromArgb(0xFF, 0x9A, 0x9A, 0xA0));
-    private static readonly SolidColorBrush HoverBrush = new(Color.FromArgb(0x14, 0x80, 0x80, 0x80));
+    // Higher-contrast inactive colours, per theme, so icons stay readable on a
+    // translucent/tinted rail.
+    private static readonly SolidColorBrush MutedLight = new(Color.FromArgb(0xFF, 0x4D, 0x4D, 0x50));
+    private static readonly SolidColorBrush MutedDark = new(Color.FromArgb(0xFF, 0xD2, 0xD2, 0xD6));
+    private static readonly SolidColorBrush HoverBrush = new(Color.FromArgb(0x18, 0x80, 0x80, 0x80));
     private static readonly SolidColorBrush ClearBrush = new(Colors.Transparent);
 
     public event EventHandler? Selected;
@@ -18,8 +21,11 @@ public sealed partial class NavRailButton : UserControl
     public NavRailButton()
     {
         InitializeComponent();
+        ActualThemeChanged += (_, _) => UpdateVisual();
         UpdateVisual();
     }
+
+    private SolidColorBrush Muted => ActualTheme == ElementTheme.Dark ? MutedDark : MutedLight;
 
     public string Section { get; set; } = string.Empty;
 
@@ -79,15 +85,15 @@ public sealed partial class NavRailButton : UserControl
         if (IsSelected)
         {
             Root.Background = Tint ?? ClearBrush;
-            IconElement.Foreground = Accent ?? MutedBrush;
-            LabelElement.Foreground = Accent ?? MutedBrush;
+            IconElement.Foreground = Accent ?? Muted;
+            LabelElement.Foreground = Accent ?? Muted;
             LabelElement.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
         }
         else
         {
             Root.Background = ClearBrush;
-            IconElement.Foreground = MutedBrush;
-            LabelElement.Foreground = MutedBrush;
+            IconElement.Foreground = Muted;
+            LabelElement.Foreground = Muted;
             LabelElement.FontWeight = Microsoft.UI.Text.FontWeights.Normal;
         }
     }
