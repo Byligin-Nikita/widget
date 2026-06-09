@@ -6,7 +6,7 @@
 
     <ScrollViewer Padding="16" VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
-        <StackPanel Spacing="14" MaxWidth="620" HorizontalAlignment="Left">
+        <StackPanel Spacing="14" MaxWidth="820" HorizontalAlignment="Center">
             <TextBlock Text="Настройки" Style="{StaticResource SectionTitleStyle}"/>
 
             <!-- Appearance -->

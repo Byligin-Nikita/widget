@@ -9,7 +9,7 @@
 
             <!-- Hero: big date + jade orb -->
             <Border Style="{StaticResource CardStyle}" Padding="0" Height="172" MaxWidth="620"
-                    HorizontalAlignment="Stretch">
+                    HorizontalAlignment="Center">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -30,7 +30,7 @@
             </Border>
 
             <!-- Search-style quick-add pill -->
-            <StackPanel HorizontalAlignment="Stretch" MaxWidth="620" Spacing="4">
+            <StackPanel HorizontalAlignment="Center" MaxWidth="620" Spacing="4">
                 <Border CornerRadius="24" Height="46" Padding="18,0"
                         Background="{ThemeResource CardBackgroundBrush}"
                         BorderBrush="{ThemeResource WidgetBorderBrush}" BorderThickness="1">
