@@ -115,6 +115,16 @@
 
     <StaticResource x:Key="ProgressBarForeground" ResourceKey="AccentBrush"/>
 
+    <StaticResource x:Key="AccentButtonBackground" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonBackgroundPointerOver" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonBackgroundPressed" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonBorderBrush" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonBorderBrushPointerOver" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonBorderBrushPressed" ResourceKey="AccentBrush"/>
+    <StaticResource x:Key="AccentButtonForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush"/>
+    <StaticResource x:Key="AccentButtonForegroundPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush"/>
+    <StaticResource x:Key="AccentButtonForegroundPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush"/>
+
     <!-- ===== Generous, soft corners ===== -->
     <CornerRadius x:Key="ControlCornerRadius">11</CornerRadius>
     <CornerRadius x:Key="OverlayCornerRadius">16</CornerRadius>
