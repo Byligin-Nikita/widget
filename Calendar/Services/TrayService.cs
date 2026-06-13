@@ -39,6 +39,7 @@ public sealed class TrayService : IDisposable
         var exit = new MenuFlyoutItem { Text = "Выход" };
         exit.Click += (_, _) =>
         {
+            App.MainWidget?.PrepareExit();
             App.MainWidget?.Close();
             Application.Current.Exit();
         };

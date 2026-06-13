@@ -15,7 +15,11 @@ public sealed partial class MainWindow : Window
     private readonly NavRailButton[] _navButtons;
     private readonly BackdropManager _backdrop = new();
     private bool _backdropActive;
+    private bool _exiting;
     private static readonly SolidColorBrush TransparentBrush = new(Colors.Transparent);
+
+    /// <summary>Allow the next close to actually exit (called by the tray "Выход").</summary>
+    public void PrepareExit() => _exiting = true;
 
     public MainWindow()
     {
@@ -41,6 +45,17 @@ public sealed partial class MainWindow : Window
         // Re-assert topmost: enabling the custom title bar can reset the
         // presenter's IsAlwaysOnTop, so apply it last.
         WidgetWindowHelper.SetAlwaysOnTop(this, s.AlwaysOnTop);
+
+        // Close button hides to tray instead of quitting (real exit = tray menu).
+        var aw = WidgetWindowHelper.GetAppWindow(this);
+        aw.Closing += (sender, e) =>
+        {
+            if (_exiting) return;
+            e.Cancel = true;
+            WidgetWindowHelper.SaveBounds(this, App.CurrentSettings);
+            _ = App.SaveSettingsAsync();
+            sender.Hide();
+        };
 
         Closed += async (_, _) =>
         {
